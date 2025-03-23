@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://jakarta.ee/xml/ns/jakartaee" version="5.0">
+    
+    <!-- Định tuyến trang mặc định -->
+    <welcome-file-list>
+        <welcome-file>login.jsp</welcome-file>
+    </welcome-file-list>
+    
+    <session-config>
+        <session-timeout>30</session-timeout> <!-- Session sẽ tồn tại 30 phút -->
+    </session-config>
+    
+</web-app>
