@@ -2,13 +2,13 @@ package dao;
 
 import db.DBConnection;
 import model.LeaveRequest;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LeaveRequestDAO {
+
     public static boolean createLeaveRequest(LeaveRequest leaveRequest) {
         String sql = "INSERT INTO LeaveRequests (UserID, LeaveTypeID, StartDate, EndDate, Reason, Attachment, Status, CreatedAt) " +
                      "VALUES (?, ?, ?, ?, ?, ?, 'Inprogress', GETDATE())";
@@ -29,37 +29,56 @@ public class LeaveRequestDAO {
         }
         return false;
     }
-    
-    // Lấy danh sách các đơn chờ của nhân viên trong ban
-    public static List<LeaveRequest> getPendingRequestsByDepartment(String department) {
-        List<LeaveRequest> pendingRequests = new ArrayList<>();
-        String sql = "SELECT lr.RequestID, lr.UserID, lr.LeaveTypeID, lt.LeaveTypeName, lr.StartDate, lr.EndDate, lr.Reason, lr.Status " +
+
+    public static List<LeaveRequest> getPendingRequestsByManager(int managerID) {
+        List<LeaveRequest> leaveRequests = new ArrayList<>();
+        String sql = "SELECT lr.RequestID, lr.UserID, lr.LeaveTypeID, lr.StartDate, lr.EndDate, lr.Reason, lr.Attachment, lr.Status, lr.CreatedAt, u.FullName, lt.LeaveTypeName " +
                      "FROM LeaveRequests lr " +
                      "JOIN Users u ON lr.UserID = u.UserID " +
                      "JOIN LeaveType lt ON lr.LeaveTypeID = lt.LeaveTypeID " +
-                     "WHERE u.Department = ? AND lr.Status = 'Inprogress'";
+                     "JOIN Department d ON u.DepartmentID = d.DepartmentID " +
+                     "WHERE lr.Status = 'Inprogress' AND d.ManagerID = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, department);
+            ps.setInt(1, managerID);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     LeaveRequest leaveRequest = new LeaveRequest();
                     leaveRequest.setRequestID(rs.getInt("RequestID"));
                     leaveRequest.setUserID(rs.getInt("UserID"));
                     leaveRequest.setLeaveTypeID(rs.getInt("LeaveTypeID"));
-                    leaveRequest.setLeaveTypeName(rs.getString("LeaveTypeName"));
                     leaveRequest.setStartDate(rs.getString("StartDate"));
                     leaveRequest.setEndDate(rs.getString("EndDate"));
                     leaveRequest.setReason(rs.getString("Reason"));
+                    leaveRequest.setAttachment(rs.getString("Attachment"));
                     leaveRequest.setStatus(rs.getString("Status"));
-                    pendingRequests.add(leaveRequest);
+                    leaveRequest.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    leaveRequest.setUserName(rs.getString("FullName"));
+                    leaveRequest.setLeaveTypeName(rs.getString("LeaveTypeName"));
+                    leaveRequests.add(leaveRequest);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return pendingRequests;
+        return leaveRequests;
+    }
+
+    public static boolean updateLeaveRequestStatus(int requestID, String status, int managerID) {
+        String sql = "UPDATE LeaveRequests SET Status = ?, Approved_By = ?, ProcessedAt = GETDATE() WHERE RequestID = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setInt(2, managerID);
+            ps.setInt(3, requestID);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

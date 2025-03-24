@@ -1,17 +1,22 @@
 <%@ page session="true" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="db.DBConnection" %>
+
 <%
     String username = (String) session.getAttribute("username");
     String role = (String) session.getAttribute("role");
     Integer userID = (Integer) session.getAttribute("userID");
 
-    if (username == null || !"Employee".equals(role)) {
+    if (username == null) {
         response.sendRedirect("login.jsp");
         return;
     }
+    
+    String successMessage = (String) session.getAttribute("successMessage");
+    String errorMessage = (String) session.getAttribute("errorMessage");
+    session.removeAttribute("successMessage");
+    session.removeAttribute("errorMessage");
 
-    // L?y danh sách LeaveType t? database
     String sql = "SELECT LeaveTypeID, LeaveTypeName FROM LeaveType";
     java.util.List<java.util.Map<String, Object>> leaveTypes = new java.util.ArrayList<>();
     
@@ -137,14 +142,14 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background: var(--primary)">
         <div class="container">
-            <a class="navbar-brand" href="#">Employee Dashboard</a>
+            <a class="navbar-brand" href="#">Dashboard</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="employee_dashboard.jsp">
+                        <a class="nav-link" href="<%= role != null && "Manager".equals(role) ? "manager_dashboard.jsp" : "employee_dashboard.jsp" %>">
                             <i class="bi bi-house-door"></i> Dashboard
                         </a>
                     </li>
@@ -169,6 +174,18 @@
             <h2 class="mb-2">Create Leave Request</h2>
             <p class="mb-0">Submit your leave request for approval</p>
         </div>
+
+        <!-- Display Messages -->
+        <% if (successMessage != null) { %>
+            <div class="alert alert-success" role="alert">
+                <%= successMessage %>
+            </div>
+        <% } %>
+        <% if (errorMessage != null) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= errorMessage %>
+            </div>
+        <% } %>
 
         <!-- Leave Request Form -->
         <div class="info-card">
@@ -221,7 +238,7 @@
 
                     <!-- Buttons -->
                     <div class="col-12 text-center mt-4">
-                        <a href="employee_dashboard.jsp" class="btn btn-back me-2">
+                        <a href="<%= role != null && "Manager".equals(role) ? "manager_dashboard.jsp" : "employee_dashboard.jsp" %>" class="btn btn-back me-2">
                             <i class="bi bi-arrow-left"></i> Back to Dashboard
                         </a>
                         <button type="submit" class="btn btn-submit">

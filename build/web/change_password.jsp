@@ -1,4 +1,5 @@
 <%@ page session="true" %>
+<%@ page import="model.User" %>
 <%
     String username = (String) session.getAttribute("username");
     String role = (String) session.getAttribute("role");
@@ -121,14 +122,14 @@
         <!-- Navigation -->
         <nav class="navbar navbar-expand-lg navbar-dark" style="background: var(--primary)">
             <div class="container">
-                <a class="navbar-brand" href="#">Employee Dashboard</a>
+                <a class="navbar-brand" href="#">Change Password</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="employee_dashboard.jsp">
+                            <a class="nav-link" href="<%= role != null && "Manager".equals(role) ? "manager_dashboard.jsp" : "employee_dashboard.jsp" %>">
                                 <i class="bi bi-house-door"></i> Dashboard
                             </a>
                         </li>

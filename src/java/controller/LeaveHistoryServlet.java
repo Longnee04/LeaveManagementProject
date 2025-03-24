@@ -23,6 +23,7 @@ public class LeaveHistoryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         Integer userID = (Integer) session.getAttribute("userID");
+        String role = (String) session.getAttribute("role");
 
         // Kiểm tra xem người dùng đã đăng nhập chưa
         if (userID == null) {

@@ -1,14 +1,29 @@
 package model;
 
+import java.util.Date;
+
 public class LeaveRequest {
+    private int requestID;
     private int userID;
     private int leaveTypeID;
     private String startDate;
     private String endDate;
     private String reason;
     private String attachment;
+    private String status;
+    private Date createdAt;
+    private String userName;
+    private String leaveTypeName;
 
     // Getters và Setters
+    public int getRequestID() {
+        return requestID;
+    }
+
+    public void setRequestID(int requestID) {
+        this.requestID = requestID;
+    }
+
     public int getUserID() {
         return userID;
     }
@@ -55,5 +70,37 @@ public class LeaveRequest {
 
     public void setAttachment(String attachment) {
         this.attachment = attachment;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getLeaveTypeName() {
+        return leaveTypeName;
+    }
+
+    public void setLeaveTypeName(String leaveTypeName) {
+        this.leaveTypeName = leaveTypeName;
     }
 }

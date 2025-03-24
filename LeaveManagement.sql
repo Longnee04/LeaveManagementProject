@@ -11,7 +11,8 @@ CREATE TABLE Users (
     FullName NVARCHAR(100) NOT NULL,
     Email NVARCHAR(100) UNIQUE NOT NULL,
     Role NVARCHAR(50) NOT NULL, -- VD: Employee, Manager, Admin
-    Department NVARCHAR(50),
+    DepartmentID INT NULL, -- Tham chiếu đến bảng Department
+    Department NVARCHAR(50) NULL, -- Tên phòng ban
     Phone NVARCHAR(15) NULL,
     Gender NVARCHAR(10) CHECK (Gender IN ('Male', 'Female', 'Other')) NULL,
     DOB DATE NULL,
@@ -19,7 +20,19 @@ CREATE TABLE Users (
     CreatedAt DATETIME DEFAULT GETDATE()
 );
 
--- 3. Tạo bảng LeaveType
+-- 3. Tạo bảng Department (Lưu thông tin phòng ban)
+CREATE TABLE Department (
+    DepartmentID INT IDENTITY(1,1) PRIMARY KEY,
+    DepartmentName NVARCHAR(50) NOT NULL UNIQUE,
+    ManagerID INT NOT NULL,
+    FOREIGN KEY (ManagerID) REFERENCES Users(UserID) ON DELETE NO ACTION
+);
+
+-- 4. Thêm khóa ngoại vào bảng Users
+ALTER TABLE Users
+ADD FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID) ON DELETE SET NULL;
+
+-- 5. Tạo bảng LeaveType
 CREATE TABLE LeaveType (
     LeaveTypeID INT IDENTITY(1,1) PRIMARY KEY, -- ID của loại nghỉ phép
     LeaveTypeName NVARCHAR(50) NOT NULL UNIQUE -- Tên loại nghỉ phép (VD: Nghỉ phép năm, Nghỉ không lương, Nghỉ ốm)
@@ -34,7 +47,7 @@ VALUES
 ('Nghỉ thai sản'),
 ('Nghỉ tang lễ');
 
--- 4. Tạo bảng LeaveRequests (Lưu đơn xin nghỉ phép)
+-- 6. Tạo bảng LeaveRequests (Lưu đơn xin nghỉ phép)
 CREATE TABLE LeaveRequests (
     RequestID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT NOT NULL, -- Người tạo đơn
@@ -55,7 +68,7 @@ CREATE TABLE LeaveRequests (
     FOREIGN KEY (Approved_By) REFERENCES Users(UserID) ON DELETE NO ACTION
 );
 
--- 5. Tạo bảng Agenda (Lịch làm việc của nhân viên)
+-- 7. Tạo bảng Agenda (Lịch làm việc của nhân viên)
 CREATE TABLE Agenda (
     AgendaID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT NOT NULL,
@@ -65,45 +78,65 @@ CREATE TABLE Agenda (
     FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
 );
 
--- 6. Thêm dữ liệu mẫu vào bảng Users (1 Admin, 3 Manager, 30 Nhân viên)
-INSERT INTO Users (Username, Password, FullName, Email, Role, Department)
+-- 8. Thêm dữ liệu mẫu vào bảng Users (1 Admin, 3 Manager, 30 Nhân viên)
+INSERT INTO Users (Username, Password, FullName, Email, Role)
 VALUES 
-('admin', 'admin123', 'Admin User', 'admin@example.com', 'Admin', 'IT'),
-('manager1', 'managerpass', 'Manager One', 'manager1@example.com', 'Manager', 'HR'),
-('manager2', 'managerpass', 'Manager Two', 'manager2@example.com', 'Manager', 'Sales'),
-('manager3', 'managerpass', 'Manager Three', 'manager3@example.com', 'Manager', 'IT');
+('admin', 'admin123', 'Admin User', 'admin@example.com', 'Admin'),
+('manager1', 'managerpass', 'Manager One', 'manager1@example.com', 'Manager'),
+('manager2', 'managerpass', 'Manager Two', 'manager2@example.com', 'Manager'),
+('manager3', 'managerpass', 'Manager Three', 'manager3@example.com', 'Manager');
+
+-- 9. Thêm dữ liệu mẫu vào bảng Department
+INSERT INTO Department (DepartmentName, ManagerID)
+VALUES 
+('HR', 2),
+('Sales', 3),
+('IT', 4);
+
+-- 10. Cập nhật bảng Users với DepartmentID và Department
+UPDATE Users SET DepartmentID = 1, Department = 'HR' WHERE UserID = 2;
+UPDATE Users SET DepartmentID = 2, Department = 'Sales' WHERE UserID = 3;
+UPDATE Users SET DepartmentID = 3, Department = 'IT' WHERE UserID = 4;
 
 DECLARE @i INT = 1;
 WHILE @i <= 30
 BEGIN
-    INSERT INTO Users (Username, Password, FullName, Email, Role, Department)
+    INSERT INTO Users (Username, Password, FullName, Email, Role, DepartmentID, Department)
     VALUES (
         CONCAT('user', @i), 
         'password123', 
         CONCAT('User ', @i), 
         CONCAT('user', @i, '@example.com'), 
         'Employee', 
+        CASE WHEN @i % 3 = 0 THEN 1 WHEN @i % 3 = 1 THEN 2 ELSE 3 END,
         CASE WHEN @i % 3 = 0 THEN 'HR' WHEN @i % 3 = 1 THEN 'Sales' ELSE 'IT' END
     );
     SET @i = @i + 1;
 END;
 
--- 7. Thêm dữ liệu mẫu vào bảng LeaveRequests
+-- 11. Thêm dữ liệu mẫu vào bảng LeaveRequests
 INSERT INTO LeaveRequests (UserID, LeaveTypeID, StartDate, EndDate, Reason, Status, Created_By, Approved_By, ProcessedAt)
 VALUES
 (2, 1, '2025-03-17', '2025-03-20', 'Ông mất', 'Inprogress', NULL, NULL, NULL),
 (3, 2, '2025-03-15', '2025-03-20', 'Đi du lịch', 'Inprogress', NULL, NULL, NULL),
 (4, 3, '2025-04-01', '2025-04-03', 'Nghỉ cưới', 'Approved', 1, 1, GETDATE());
 
--- 8. Thêm dữ liệu mẫu vào bảng Agenda
+-- 12. Thêm dữ liệu mẫu vào bảng Agenda
 INSERT INTO Agenda (UserID, Username, WorkDate, Status)
 SELECT UserID, Username, '2025-03-17', 'Working' FROM Users WHERE Role = 'Employee';
+SELECT UserID, Username, '2025-03-18', 'Working' FROM Users WHERE Role = 'Employee';
+SELECT UserID, Username, '2025-03-19', 'Working' FROM Users WHERE Role = 'Employee';
+SELECT UserID, Username, '2025-03-20', 'Working' FROM Users WHERE Role = 'Employee';
+SELECT UserID, Username, '2025-03-21', 'Working' FROM Users WHERE Role = 'Employee';
+SELECT UserID, Username, '2025-03-22', 'Working' FROM Users WHERE Role = 'Employee';
+SELECT UserID, Username, '2025-03-23', 'Working' FROM Users WHERE Role = 'Employee';
 
--- 9. Kiểm tra dữ liệu
+-- 13. Kiểm tra dữ liệu
 SELECT * FROM Users;
 SELECT * FROM LeaveRequests;
 SELECT * FROM Agenda;
 SELECT * FROM LeaveType;
+SELECT * FROM Department;
 
 SELECT 
     lr.RequestID,

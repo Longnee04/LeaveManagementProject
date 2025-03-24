@@ -6,19 +6,18 @@
     String role = (String) session.getAttribute("role");
     Integer userID = (Integer) session.getAttribute("userID");
 
-    if (username == null || !"Employee".equals(role)) {
+    if (username == null) {
         response.sendRedirect("login.jsp");
         return;
     }
 
     int requestID = Integer.parseInt(request.getParameter("requestID"));
-    String sql = "SELECT LeaveTypeID, StartDate, EndDate, Reason FROM LeaveRequests WHERE RequestID = ? AND UserID = ?";
+    String sql = "SELECT LeaveTypeID, StartDate, EndDate, Reason FROM LeaveRequests WHERE RequestID = ?";
     java.util.Map<String, Object> leaveRequest = new java.util.HashMap<>();
 
     try (Connection conn = DBConnection.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setInt(1, requestID);
-        ps.setInt(2, userID);
         try (ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 leaveRequest.put("leaveTypeID", rs.getInt("LeaveTypeID"));
@@ -78,6 +77,7 @@
                 <textarea class="form-control" id="reason" name="reason" rows="4" required><%= leaveRequest.get("reason") %></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
+            <a href="DeleteLeaveRequestServlet?requestID=<%= requestID %>" class="btn btn-danger">Delete</a>
         </form>
     </div>
 </body>

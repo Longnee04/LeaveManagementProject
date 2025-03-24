@@ -2,6 +2,39 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/DeleteLeaveRequestServlet.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/employee_list.jsp</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/EmployeeListServlet.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/CSS/login.css</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/UpdateLeaveRequestServlet.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/model/LeaveRequest.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/model/User.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/LogoutServlet.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/profile.jsp</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/ProfileServlet.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/admin_dashboard.jsp</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/employee_dashboard.jsp</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/UpdateProfileServlet.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/CSS/Adashboard.css</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/update_profile.jsp</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/AddEmployeeServlet.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/view_leave_requests.jsp</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/LoginServlet.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/ChangePasswordServlet.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/CreateLeaveRequestServlet.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/CSS/Edashboard.css</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/edit_leave_request.jsp</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/LeaveHistoryServlet.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/manager_dashboard.jsp</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/create_leave_request.jsp</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/DeleteEmployeeServlet.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/change_password.jsp</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/error.jsp</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/dao/LeaveRequestDAO.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/src/java/dao/UserDAO.java</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/login.jsp</file>
+            <file>file:/D:/PRJ302/LeaveManagement/web/add_employee.jsp</file>
+        </group>
     </open-files>
 </project-private>

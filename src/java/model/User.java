@@ -9,35 +9,15 @@ public class User {
     private String fullName;
     private String email;
     private String role;
-    private String department;
+    private int departmentID;
+    private String Department;
     private String phone;
     private String gender;
     private Date dob;
     private String address;
     private Date createdAt;
 
-    // Constructor mặc định
-    public User() {
-    }
-
-    // Constructor có tham số
-    public User(int userID, String username, String password, String fullName, String email, String role,
-                String department, String phone, String gender, Date dob, String address, Date createdAt) {
-        this.userID = userID;
-        this.username = username;
-        this.password = password;
-        this.fullName = fullName;
-        this.email = email;
-        this.role = role;
-        this.department = department;
-        this.phone = phone;
-        this.gender = gender;
-        this.dob = dob;
-        this.address = address;
-        this.createdAt = createdAt;
-    }
-
-    // Getter và Setter
+    // Getters and Setters
     public int getUserID() {
         return userID;
     }
@@ -86,12 +66,20 @@ public class User {
         this.role = role;
     }
 
-    public String getDepartment() {
-        return department;
+    public int getDepartmentID() {
+        return departmentID;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setDepartmentID(int departmentID) {
+        this.departmentID = departmentID;
+    }
+
+    public String getDepartment() {
+        return Department;
+    }
+
+    public void setDepartment(String departmentName) {
+        this.Department = departmentName;
     }
 
     public String getPhone() {
@@ -132,23 +120,5 @@ public class User {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    // Phương thức toString (tùy chọn)
-    @Override
-    public String toString() {
-        return "User{" +
-                "userID=" + userID +
-                ", username='" + username + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", email='" + email + '\'' +
-                ", role='" + role + '\'' +
-                ", department='" + department + '\'' +
-                ", phone='" + phone + '\'' +
-                ", gender='" + gender + '\'' +
-                ", dob=" + dob +
-                ", address='" + address + '\'' +
-                ", createdAt=" + createdAt +
-                '}';
     }
 }
