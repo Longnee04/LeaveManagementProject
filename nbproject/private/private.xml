@@ -3,38 +3,28 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/DeleteLeaveRequestServlet.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/employee_list.jsp</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/EmployeeListServlet.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/CSS/login.css</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/UpdateLeaveRequestServlet.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/model/LeaveRequest.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/model/User.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/LogoutServlet.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/profile.jsp</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/ProfileServlet.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/admin_dashboard.jsp</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/employee_dashboard.jsp</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/UpdateProfileServlet.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/CSS/Adashboard.css</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/update_profile.jsp</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/AddEmployeeServlet.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/view_leave_requests.jsp</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/LoginServlet.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/ChangePasswordServlet.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/CreateLeaveRequestServlet.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/CSS/Edashboard.css</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/edit_leave_request.jsp</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/LeaveHistoryServlet.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/manager_dashboard.jsp</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/create_leave_request.jsp</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/controller/DeleteEmployeeServlet.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/change_password.jsp</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/error.jsp</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/dao/LeaveRequestDAO.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/src/java/dao/UserDAO.java</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/login.jsp</file>
-            <file>file:/D:/PRJ302/LeaveManagement/web/add_employee.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/warehouse/DeleteWarehouseServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/admin/AdminDashboard.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/DashboardController.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/ManagerDashboardServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/WSDashboardServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/staff/WsSidebar.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/login.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/UserProfile.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/manager/ManagerSidebar.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/WEB-INF/web.xml</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/authentication/LoginServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/warehouse/ViewWarehousesServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/staff/UserProfile.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/dao/DBConnect.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/warehouse/UpdateWarehouseServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/nbproject/build-impl.xml</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/staff/WSDashboard.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/manager/ManagerDashboard.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/admin/AdminSidebar.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/warehouse/AddWarehouseServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/AdminDashboardServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/UserController.java</file>
         </group>
     </open-files>
 </project-private>
