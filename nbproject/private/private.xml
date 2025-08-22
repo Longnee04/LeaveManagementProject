@@ -3,27 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/warehouse/DeleteWarehouseServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/AdminProfile.java</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/admin/AdminDashboard.jsp</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/DashboardController.java</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/ManagerDashboardServlet.java</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/WSDashboardServlet.java</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/staff/WsSidebar.jsp</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/login.jsp</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/UserProfile.java</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/manager/ManagerSidebar.jsp</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/WEB-INF/web.xml</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/authentication/LoginServlet.java</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/warehouse/ViewWarehousesServlet.java</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/staff/UserProfile.jsp</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/dao/DBConnect.java</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/warehouse/UpdateWarehouseServlet.java</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/nbproject/build-impl.xml</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/staff/WSDashboard.jsp</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/manager/ManagerDashboard.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/admin/viewlistuser.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/leavetype/LeaveTypeServlet.java</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/admin/AdminSidebar.jsp</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/warehouse/AddWarehouseServlet.java</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/AdminDashboardServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/model/LeaveType.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/ManagerProfile.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/StaffProfile.java</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/UserController.java</file>
         </group>
     </open-files>

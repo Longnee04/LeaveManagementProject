@@ -14,6 +14,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import utils.AuthorizationService;
 import dao.WarehouseDAO;
 import dao.UserDAO2;
+import dao.DBConnect;
+import dao.LeaveTypeDAO;
+import java.sql.Connection;
 
 /**
  *
@@ -72,6 +75,16 @@ public class AdminDashboardServlet extends HttpServlet {
         // Lấy tổng số sản phẩm, kho, user bằng cách lấy size của list
         int totalWarehouses = warehouseDAO.getAll().size();
         int totalUsers = userDAO.getAllUsers().size();
+
+        // Leave type metrics
+        DBConnect db = new DBConnect();
+        Connection conn = db.connection;
+        LeaveTypeDAO leaveTypeDAO = new LeaveTypeDAO(conn);
+        int totalLeaveTypes = leaveTypeDAO.countAll();
+        int activeLeaveTypes = leaveTypeDAO.countActive();
+        request.setAttribute("totalLeaveTypes", totalLeaveTypes);
+        request.setAttribute("activeLeaveTypes", activeLeaveTypes);
+        request.setAttribute("latestLeaveTypes", leaveTypeDAO.getLatest(5));
 
         // Truyền dữ liệu sang JSP
         request.setAttribute("totalWarehouses", totalWarehouses);

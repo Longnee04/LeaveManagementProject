@@ -62,6 +62,44 @@ ADD CONSTRAINT FK_Warehouse_Manager FOREIGN KEY (manager_id) REFERENCES [User](u
 ALTER TABLE [User]
 ADD CONSTRAINT FK_User_Warehouse FOREIGN KEY (warehouse_id) REFERENCES Warehouse(warehouse_id);
 
+-- 4. leave_type
+CREATE TABLE Leave_Type (
+    leave_type_id INT IDENTITY(1,1) PRIMARY KEY,
+    leave_type_name NVARCHAR(50) NOT NULL UNIQUE,
+    description NVARCHAR(255),
+    is_active BIT DEFAULT 1,
+    created_at DATETIME DEFAULT GETDATE(),
+    last_updated DATETIME
+);
+
+-- 5. Leave_Request
+CREATE TABLE Leave_Request (
+    request_id INT IDENTITY(1,1) PRIMARY KEY,
+    request_code VARCHAR(50) UNIQUE NOT NULL,
+    employee_id INT NOT NULL,
+    warehouse_id INT NOT NULL,
+    leave_type_id INT NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    reason NVARCHAR(MAX),
+    created_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME,
+    status VARCHAR(50) NOT NULL DEFAULT 'draft',
+    approved_by INT NULL,
+    approved_at DATETIME NULL,
+    manager_notes NVARCHAR(MAX) NULL,
+    CONSTRAINT FK_LeaveRequest_Employee FOREIGN KEY (employee_id) REFERENCES [User](user_id),
+    CONSTRAINT FK_LeaveRequest_Warehouse FOREIGN KEY (warehouse_id) REFERENCES Warehouse(warehouse_id),
+    CONSTRAINT FK_LeaveRequest_LeaveType FOREIGN KEY (leave_type_id) REFERENCES Leave_Type(leave_type_id),
+    CONSTRAINT FK_LeaveRequest_ApprovedBy FOREIGN KEY (approved_by) REFERENCES [User](user_id),
+    CONSTRAINT CK_LeaveRequest_Status CHECK (status IN ('draft','pending','approve','reject')),
+    CONSTRAINT CK_LeaveRequest_Date CHECK (end_date >= start_date)
+);
+
+CREATE INDEX IX_LeaveRequest_Status ON Leave_Request(status);
+CREATE INDEX IX_LeaveRequest_Employee_Status ON Leave_Request(employee_id, status);
+CREATE INDEX IX_LeaveRequest_Warehouse ON Leave_Request(warehouse_id);
+
 
 -- 1. Role
 INSERT INTO [Role] (role_name) VALUES
@@ -109,3 +147,5 @@ UPDATE Warehouse
 SET manager_id = (SELECT user_id FROM [User] WHERE username = 'managerCT1') WHERE warehouse_id = 4;
 UPDATE Warehouse
 SET manager_id = (SELECT user_id FROM [User] WHERE username = 'managerHP1') WHERE warehouse_id = 5;
+
+

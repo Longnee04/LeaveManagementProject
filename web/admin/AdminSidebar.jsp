@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <nav id="sidebar" class="sidebar js-sidebar">
@@ -65,6 +65,19 @@
 
                 </ul>
             </li>
+            
+            <li class="sidebar-item">
+                <a data-bs-target="#leavetype-management" data-bs-toggle="collapse" class="sidebar-link collapsed" href="#">
+                    <i class="align-middle" data-feather="calendar"></i> <span class="align-middle">Leave Type</span>
+                </a>
+                <ul id="leavetype-management" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="<c:url value='/admin/leave-types?action=add'/>">Add Leave Type</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="<c:url value='/admin/leave-types'/>">Manage Leave Type</a>
+                    </li>
+                </ul>
 
             <!-- DIVIDER -->
             <li class="sidebar-header">Administration</li>

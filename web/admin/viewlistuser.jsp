@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -1004,20 +1004,6 @@
                                             <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
                                         </svg>
                                         All Users
-                                        <span class="badge bg-primary ms-2" id="userCount">
-                                            <c:choose>
-                                                <c:when test="${not empty users}">
-                                                    ${users.size()} users
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0 users
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </span>
-                                    </h5>
-                                    <div class="results-info" id="resultsInfo">
-                                        <span id="visibleCount">${users.size()}</span> users displayed
-                                    </div>
                                 </div>
                                 <div class="table-responsive">
                                     <table class="table table-hover my-0" id="usersTable">

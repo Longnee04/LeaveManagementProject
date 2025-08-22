@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 
 public class DBConnect {
-    protected Connection connection;
+    public Connection connection;
     public DBConnect()
     {
         try {
