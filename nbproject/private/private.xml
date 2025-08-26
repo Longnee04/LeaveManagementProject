@@ -4,16 +4,29 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/AdminProfile.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/dao/UserDAO.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/staff/leave-request-form.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/staff/WsSidebar.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/leaverequest/LeaveRequestServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/admin/viewlistuser.jsp</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/dao/DBConnect.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/dao/RoleDAO.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/leavetype/LeaveTypeServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/dao/LeaveTypeDAO.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/dao/LeaveRequestDAO.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/model/LeaveType.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/StaffProfile.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/model/LeaveRequest.java</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/admin/AdminDashboard.jsp</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/UserProfile.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/staff/leave-request-list.jsp</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/WEB-INF/web.xml</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/admin/viewlistuser.jsp</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/leavetype/LeaveTypeServlet.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/dao/AuthorizeDAO.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/dao/UserDAO2.java</file>
+            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/dao/WarehouseDAO.java</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/web/admin/AdminSidebar.jsp</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/warehouse/AddWarehouseServlet.java</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/model/LeaveType.java</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/ManagerProfile.java</file>
-            <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/StaffProfile.java</file>
             <file>file:/C:/Users/nlong/Downloads/LeaveManagementProject/src/java/controller/user/UserController.java</file>
         </group>
     </open-files>

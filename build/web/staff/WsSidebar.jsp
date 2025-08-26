@@ -49,7 +49,7 @@
             <li class="sidebar-header">Main Navigation</li>
 
             <li class="sidebar-item">
-<a class="sidebar-link" href="<c:url value='/staff/warehouse-staff-dashboard'/>">
+                <a class="sidebar-link" href="<c:url value='/staff/warehouse-staff-dashboard'/>">
                     <i class="align-middle" data-feather="home"></i>
                     <span class="align-middle">Dashboard</span>
                 </a>
@@ -71,14 +71,14 @@
                     <span class="align-middle">Change Password</span>
                 </a>
             </li>
-            
+
             <li class="sidebar-item">
                 <a class="sidebar-link" href="<c:url value='/logout'/>">
                     <i class="align-middle" data-feather="log-out"></i>
                     <span class="align-middle">Logout</span>
                 </a>
             </li>
-            
+
         </ul>
     </div>
 </nav>
