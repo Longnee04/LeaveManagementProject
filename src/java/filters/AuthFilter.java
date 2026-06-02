@@ -14,7 +14,13 @@ import models.User;
 import utils.RoleConstants;
 import utils.SessionKeys;
 
-@WebFilter(urlPatterns = {"/admin/*", "/manager/*", "/employee/*"})
+@WebFilter(urlPatterns = {
+    "/admin/*", "/manager/*", "/employee/*",
+    "/dashboard", "/dashboard/*",
+    "/profile", "/profile/*",
+    "/agenda", "/agenda/*",
+    "/attendance", "/attendance/*"
+})
 public class AuthFilter implements Filter {
 
     @Override
