@@ -7,6 +7,7 @@ public class User {
     private String phone;
     private String password;
     private int roleID;
+    private String roleName;
     private int departmentID;
     private boolean status;
 
@@ -41,6 +42,9 @@ public class User {
 
     public int getRoleID() { return roleID; }
     public void setRoleID(int roleID) { this.roleID = roleID; }
+
+    public String getRoleName() { return roleName; }
+    public void setRoleName(String roleName) { this.roleName = roleName; }
 
     public int getDepartmentID() { return departmentID; }
     public void setDepartmentID(int departmentID) { this.departmentID = departmentID; }

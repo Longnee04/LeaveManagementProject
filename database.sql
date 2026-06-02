@@ -46,9 +46,12 @@ CREATE TABLE Users (
     CONSTRAINT FK_User_Department FOREIGN KEY(DepartmentID) REFERENCES Departments(DepartmentID)
 );
 
--- Admin Account
+-- Demo accounts (password stored as plain text for development)
 INSERT INTO Users (FullName, Email, Phone, Password, RoleID, DepartmentID)
-VALUES (N'Administrator', 'admin@company.com', '0123456789', 'admin123', 1, 1);
+VALUES
+(N'Administrator', 'admin@company.com', '0123456789', 'admin123', 1, 1),
+(N'Nguyễn Văn Quản Lý', 'manager@company.com', '0987654321', 'manager123', 2, 2),
+(N'Trần Thị Nhân Viên', 'employee@company.com', '0912345678', 'employee123', 3, 3);
 
 -- 4. LeaveTypes
 CREATE TABLE LeaveTypes (
