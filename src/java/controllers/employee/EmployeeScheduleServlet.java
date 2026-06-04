@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.Calendar;
 import models.User;
 import models.WorkSchedule;
 import utils.SessionKeys;
@@ -18,43 +19,51 @@ public class EmployeeScheduleServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute(SessionKeys.USER);
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
         String action = request.getParameter("action");
         WorkScheduleDAO dao = new WorkScheduleDAO();
         
         if ("register".equals(action)) {
-            request.getRequestDispatcher("/employee/schedules/form.jsp").forward(request, response);
+            request.getRequestDispatcher("/employee/schedules/register.jsp").forward(request, response);
             return;
         }
-        if ("edit".equals(action)) {
+
+        // Default action: Xem bảng lịch cá nhân dạng grid tuần
+        String offsetStr = request.getParameter("weekOffset");
+        int weekOffset = 0;
+        if (offsetStr != null && !offsetStr.isBlank()) {
             try {
-                int id = Integer.parseInt(request.getParameter("id"));
-                WorkSchedule schedule = dao.findById(id);
-                if (schedule != null && schedule.getUserID() == user.getUserID() && "Pending".equals(schedule.getStatus())) {
-                    request.setAttribute("schedule", schedule);
-                    request.getRequestDispatcher("/employee/schedules/form.jsp").forward(request, response);
-                } else {
-                    response.sendRedirect(request.getContextPath() + "/employee/schedules?error=" + encode("Không thể chỉnh sửa lịch này. Lịch có thể đã được duyệt hoặc không phải của bạn."));
-                }
+                weekOffset = Integer.parseInt(offsetStr);
             } catch (NumberFormatException e) {
-                response.sendRedirect(request.getContextPath() + "/employee/schedules?error=" + encode("ID không hợp lệ."));
+                weekOffset = 0;
             }
-            return;
         }
-        if ("delete".equals(action)) {
-            try {
-                int id = Integer.parseInt(request.getParameter("id"));
-                if (dao.delete(id, user.getUserID())) {
-                    response.sendRedirect(request.getContextPath() + "/employee/schedules?success=" + encode("Đã xóa lịch làm việc thành công."));
-                } else {
-                    response.sendRedirect(request.getContextPath() + "/employee/schedules?error=" + encode("Không thể xóa lịch này. Lịch có thể đã được duyệt."));
-                }
-            } catch (NumberFormatException e) {
-                response.sendRedirect(request.getContextPath() + "/employee/schedules?error=" + encode("ID không hợp lệ."));
-            }
-            return;
-        }
+
+        Calendar cal = Calendar.getInstance();
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
         
-        request.setAttribute("schedules", dao.findByUserId(user.getUserID()));
+        // Apply offset
+        if (weekOffset != 0) {
+            cal.add(Calendar.WEEK_OF_YEAR, weekOffset);
+        }
+
+        // Tìm ngày Thứ Hai đầu tuần
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        Date monday = new Date(cal.getTimeInMillis());
+
+        // Tìm ngày Chủ Nhật cuối tuần
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        Date sunday = new Date(cal.getTimeInMillis());
+
+        request.setAttribute("schedules", dao.findByWeekAndUser(user.getUserID(), monday, sunday));
+        request.setAttribute("monday", monday);
+        request.setAttribute("sunday", sunday);
+        request.setAttribute("weekOffset", weekOffset);
+        
         request.getRequestDispatcher("/employee/schedules/list.jsp").forward(request, response);
     }
 
@@ -62,89 +71,106 @@ public class EmployeeScheduleServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute(SessionKeys.USER);
-        WorkScheduleDAO dao = new WorkScheduleDAO();
-        
-        String scheduleIdStr = request.getParameter("scheduleId");
-        String workDateStr = request.getParameter("workDate");
-        String shift = request.getParameter("shift");
-        String note = request.getParameter("note");
-        
-        if (workDateStr == null || workDateStr.isBlank() || shift == null || shift.isBlank()) {
-            request.setAttribute("error", "Vui lòng nhập đầy đủ thông tin.");
-            request.getRequestDispatcher("/employee/schedules/form.jsp").forward(request, response);
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-        
-        Date workDate;
+
+        WorkScheduleDAO dao = new WorkScheduleDAO();
+        String startDateStr = request.getParameter("startDate");
+        String endDateStr = request.getParameter("endDate");
+
+        if (startDateStr == null || startDateStr.isBlank() || endDateStr == null || endDateStr.isBlank()) {
+            request.setAttribute("error", "Vui lòng chọn khoảng ngày bắt đầu và kết thúc.");
+            request.getRequestDispatcher("/employee/schedules/register.jsp").forward(request, response);
+            return;
+        }
+
+        Date startDate;
+        Date endDate;
         try {
-            workDate = Date.valueOf(workDateStr);
-            // Kiểm tra xem ngày đăng ký có phải trong quá khứ không
+            startDate = Date.valueOf(startDateStr);
+            endDate = Date.valueOf(endDateStr);
+            
+            if (endDate.before(startDate)) {
+                request.setAttribute("error", "Ngày kết thúc không được nhỏ hơn ngày bắt đầu.");
+                request.getRequestDispatcher("/employee/schedules/register.jsp").forward(request, response);
+                return;
+            }
+
+            // Khóa không cho đăng ký trong quá khứ
             Date today = new Date(System.currentTimeMillis());
-            if (workDate.before(today) && !workDate.toString().equals(today.toString())) {
-                request.setAttribute("error", "Không thể đăng ký lịch làm việc cho các ngày trong quá khứ.");
-                if (scheduleIdStr != null && !scheduleIdStr.isBlank()) {
-                    int scheduleId = Integer.parseInt(scheduleIdStr);
-                    request.setAttribute("schedule", dao.findById(scheduleId));
-                }
-                request.getRequestDispatcher("/employee/schedules/form.jsp").forward(request, response);
+            if (startDate.before(today) && !startDate.toString().equals(today.toString())) {
+                request.setAttribute("error", "Không thể đăng ký lịch làm cho các ngày trong quá khứ.");
+                request.getRequestDispatcher("/employee/schedules/register.jsp").forward(request, response);
                 return;
             }
         } catch (IllegalArgumentException e) {
-            request.setAttribute("error", "Định dạng ngày không hợp lệ.");
-            request.getRequestDispatcher("/employee/schedules/form.jsp").forward(request, response);
+            request.setAttribute("error", "Định dạng ngày chọn không hợp lệ.");
+            request.getRequestDispatcher("/employee/schedules/register.jsp").forward(request, response);
             return;
         }
-        
-        if (scheduleIdStr != null && !scheduleIdStr.isBlank()) {
-            // Edit mode
-            int scheduleId = Integer.parseInt(scheduleIdStr);
-            WorkSchedule schedule = new WorkSchedule();
-            schedule.setScheduleID(scheduleId);
-            schedule.setUserID(user.getUserID());
-            schedule.setWorkDate(workDate);
-            schedule.setShift(shift);
-            schedule.setNote(note != null ? note.trim() : null);
-            
-            // Duplicate check (except itself)
-            WorkSchedule current = dao.findById(scheduleId);
-            if (current != null && (!current.getWorkDate().toString().equals(workDate.toString()) || !current.getShift().equals(shift))) {
-                if (dao.isDuplicate(user.getUserID(), workDate, shift)) {
-                    request.setAttribute("error", "Bạn đã đăng ký ca này vào ngày này rồi.");
-                    request.setAttribute("schedule", current);
-                    request.getRequestDispatcher("/employee/schedules/form.jsp").forward(request, response);
-                    return;
-                }
+
+        // Hủy toàn bộ các ca đang chờ duyệt (Pending) cũ trong khoảng ngày để ghi đè ca mới
+        dao.deletePendingByDateRange(user.getUserID(), startDate, endDate);
+
+        // Lặp qua từng ngày trong khoảng đã chọn
+        Calendar loopCal = Calendar.getInstance();
+        loopCal.setTime(startDate);
+
+        boolean hasInserted = false;
+
+        while (!loopCal.getTime().after(endDate)) {
+            Date currentDate = new Date(loopCal.getTimeInMillis());
+            String dateKey = currentDate.toString();
+
+            // Đọc trạng thái checkboxes
+            String morning = request.getParameter("shift_" + dateKey + "_Morning");
+            String afternoon = request.getParameter("shift_" + dateKey + "_Afternoon");
+            String evening = request.getParameter("shift_" + dateKey + "_Evening");
+            String dailyNote = request.getParameter("note_" + dateKey);
+
+            if (morning != null) {
+                WorkSchedule ws = new WorkSchedule();
+                ws.setUserID(user.getUserID());
+                ws.setWorkDate(currentDate);
+                ws.setShift("Morning");
+                ws.setStatus("Pending");
+                ws.setNote(dailyNote != null ? dailyNote.trim() : null);
+                dao.insert(ws);
+                hasInserted = true;
+            }
+            if (afternoon != null) {
+                WorkSchedule ws = new WorkSchedule();
+                ws.setUserID(user.getUserID());
+                ws.setWorkDate(currentDate);
+                ws.setShift("Afternoon");
+                ws.setStatus("Pending");
+                ws.setNote(dailyNote != null ? dailyNote.trim() : null);
+                dao.insert(ws);
+                hasInserted = true;
+            }
+            if (evening != null) {
+                WorkSchedule ws = new WorkSchedule();
+                ws.setUserID(user.getUserID());
+                ws.setWorkDate(currentDate);
+                ws.setShift("Evening");
+                ws.setStatus("Pending");
+                ws.setNote(dailyNote != null ? dailyNote.trim() : null);
+                dao.insert(ws);
+                hasInserted = true;
             }
 
-            if (dao.update(schedule)) {
-                response.sendRedirect(request.getContextPath() + "/employee/schedules?success=" + encode("Đã cập nhật lịch làm việc thành công."));
-            } else {
-                response.sendRedirect(request.getContextPath() + "/employee/schedules?error=" + encode("Không thể cập nhật lịch làm việc."));
-            }
+            loopCal.add(Calendar.DATE, 1);
+        }
+
+        if (hasInserted) {
+            response.sendRedirect(request.getContextPath() + "/employee/schedules?success=" + encode("Đã đăng ký ca làm việc thành công cho khoảng ngày từ " + startDateStr + " đến " + endDateStr + ". Vui lòng chờ quản lý duyệt."));
         } else {
-            // Create mode - check duplicate
-            if (dao.isDuplicate(user.getUserID(), workDate, shift)) {
-                request.setAttribute("error", "Bạn đã đăng ký ca này vào ngày này rồi.");
-                request.getRequestDispatcher("/employee/schedules/form.jsp").forward(request, response);
-                return;
-            }
-            
-            WorkSchedule schedule = new WorkSchedule();
-            schedule.setUserID(user.getUserID());
-            schedule.setWorkDate(workDate);
-            schedule.setShift(shift);
-            schedule.setNote(note != null ? note.trim() : null);
-            schedule.setStatus("Pending");
-            
-            if (dao.insert(schedule) > 0) {
-                response.sendRedirect(request.getContextPath() + "/employee/schedules?success=" + encode("Đã đăng ký lịch làm việc thành công. Vui lòng chờ quản lý duyệt."));
-            } else {
-                request.setAttribute("error", "Có lỗi xảy ra khi lưu lịch làm việc.");
-                request.getRequestDispatcher("/employee/schedules/form.jsp").forward(request, response);
-            }
+            response.sendRedirect(request.getContextPath() + "/employee/schedules?success=" + encode("Đã lưu. Không có ca nào được đăng ký thêm trong khoảng ngày này."));
         }
     }
-    
+
     private String encode(String msg) {
         return java.net.URLEncoder.encode(msg, java.nio.charset.StandardCharsets.UTF_8);
     }

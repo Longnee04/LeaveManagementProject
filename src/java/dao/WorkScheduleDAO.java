@@ -235,6 +235,87 @@ public class WorkScheduleDAO extends DBContext {
         return 0;
     }
 
+    // Xóa các ca đang chờ duyệt của nhân viên trong khoảng ngày (để đăng ký đè lịch mới)
+    public boolean deletePendingByDateRange(int userId, Date start, Date end) {
+        String sql = "DELETE FROM WorkSchedules WHERE UserID = ? AND WorkDate BETWEEN ? AND ? AND Status = 'Pending'";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, userId);
+            st.setDate(2, start);
+            st.setDate(3, end);
+            st.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error in WorkScheduleDAO.deletePendingByDateRange: " + e.getMessage());
+        }
+        return false;
+    }
+
+    // Lấy tất cả lịch (bao gồm các ca Approved, Pending, Rejected) của 1 nhân viên trong tuần
+    public List<WorkSchedule> findByWeekAndUser(int userId, Date start, Date end) {
+        List<WorkSchedule> list = new ArrayList<>();
+        String sql = """
+            SELECT ws.ScheduleID, ws.UserID, ws.WorkDate, ws.Shift, ws.Status, ws.Note, ws.CreatedAt, u.FullName AS EmployeeName
+            FROM WorkSchedules ws
+            INNER JOIN Users u ON ws.UserID = u.UserID
+            WHERE ws.UserID = ? AND ws.WorkDate BETWEEN ? AND ?
+            ORDER BY ws.WorkDate ASC, ws.Shift ASC
+            """;
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, userId);
+            st.setDate(2, start);
+            st.setDate(3, end);
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in WorkScheduleDAO.findByWeekAndUser: " + e.getMessage());
+        }
+        return list;
+    }
+
+    // Lấy toàn bộ ca đăng ký của phòng ban (hoặc tất cả nhân viên) trong khoảng ngày
+    public List<WorkSchedule> findByWeekAndDepartment(int deptId, Date start, Date end) {
+        List<WorkSchedule> list = new ArrayList<>();
+        String sql;
+        if (deptId > 0) {
+            sql = """
+                SELECT ws.ScheduleID, ws.UserID, ws.WorkDate, ws.Shift, ws.Status, ws.Note, ws.CreatedAt, u.FullName AS EmployeeName
+                FROM WorkSchedules ws
+                INNER JOIN Users u ON ws.UserID = u.UserID
+                WHERE u.DepartmentID = ? AND u.Status = 1 AND ws.WorkDate BETWEEN ? AND ?
+                ORDER BY u.FullName ASC, ws.WorkDate ASC, ws.Shift ASC
+                """;
+        } else {
+            sql = """
+                SELECT ws.ScheduleID, ws.UserID, ws.WorkDate, ws.Shift, ws.Status, ws.Note, ws.CreatedAt, u.FullName AS EmployeeName
+                FROM WorkSchedules ws
+                INNER JOIN Users u ON ws.UserID = u.UserID
+                WHERE u.Status = 1 AND ws.WorkDate BETWEEN ? AND ?
+                ORDER BY u.FullName ASC, ws.WorkDate ASC, ws.Shift ASC
+                """;
+        }
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            if (deptId > 0) {
+                st.setInt(1, deptId);
+                st.setDate(2, start);
+                st.setDate(3, end);
+            } else {
+                st.setDate(1, start);
+                st.setDate(2, end);
+            }
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in WorkScheduleDAO.findByWeekAndDepartment: " + e.getMessage());
+        }
+        return list;
+    }
+
     private WorkSchedule mapRow(ResultSet rs) throws SQLException {
         WorkSchedule ws = new WorkSchedule();
         ws.setScheduleID(rs.getInt("ScheduleID"));
@@ -248,3 +329,4 @@ public class WorkScheduleDAO extends DBContext {
         return ws;
     }
 }
+

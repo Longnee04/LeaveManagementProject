@@ -101,20 +101,33 @@
         <!-- Demo Accounts Section -->
         <div class="demo-card">
             <strong style="font-size: 0.825rem; color: var(--text-primary); display: block; margin-bottom: 8px;">
-                <i class="fa-solid fa-circle-info text-primary me-1"></i> Tài khoản Demo (Click để điền nhanh)
+                <i class="fa-solid fa-circle-info text-primary me-1"></i> Tài khoản Demo (Chọn để điền nhanh)
             </strong>
-            <div style="font-size: 0.75rem;">
-                <div class="demo-item d-flex justify-content-between align-items-center" onclick="fillAccount('admin@company.com', 'admin123')">
-                    <span><i class="fa-solid fa-user-shield text-danger me-1"></i> Quản trị viên (Admin)</span>
-                    <strong class="text-primary">admin123</strong>
-                </div>
-                <div class="demo-item d-flex justify-content-between align-items-center" onclick="fillAccount('manager@company.com', 'manager123')">
-                    <span><i class="fa-solid fa-user-tie text-warning me-1"></i> Quản lý (Manager)</span>
-                    <strong class="text-primary">manager123</strong>
-                </div>
-                <div class="demo-item d-flex justify-content-between align-items-center" onclick="fillAccount('employee@company.com', 'employee123')">
-                    <span><i class="fa-solid fa-user text-success me-1"></i> Nhân viên (Employee)</span>
-                    <strong class="text-primary">employee123</strong>
+            <div style="font-size: 0.8rem;">
+                <select class="form-select form-control py-1.5 px-2 mb-1" id="demoAccountSelect" onchange="selectDemoAccount(this.value)" style="font-size: 0.8rem; border-radius: 6px; cursor: pointer; border-color: var(--border-color);">
+                    <option value="">-- Chọn tài khoản mẫu --</option>
+                    <optgroup label="Quản trị hệ thống">
+                        <option value="admin@company.com|admin123">Admin - admin@company.com (Mật khẩu: admin123)</option>
+                    </optgroup>
+                    <optgroup label="Quản lý bộ phận (Managers)">
+                        <option value="director.admin@company.com|manager123">QL Ban Giám đốc - director.admin@company.com</option>
+                        <option value="manager@company.com|manager123">QL Nhân sự - manager@company.com</option>
+                        <option value="lan.vu@company.com|manager123">QL IT - lan.vu@company.com</option>
+                        <option value="manager.finance@company.com|manager123">QL Tài chính - manager.finance@company.com</option>
+                        <option value="manager.marketing@company.com|manager123">QL Marketing - manager.marketing@company.com</option>
+                        <option value="manager.sales@company.com|manager123">QL Kinh doanh - manager.sales@company.com</option>
+                    </optgroup>
+                    <optgroup label="Nhân viên từng bộ phận (Employees)">
+                        <option value="assistant1.admin@company.com|employee123">NV Ban Giám đốc - assistant1.admin@company.com</option>
+                        <option value="hr.staff1@company.com|employee123">NV Nhân sự - hr.staff1@company.com</option>
+                        <option value="employee@company.com|employee123">NV IT - employee@company.com</option>
+                        <option value="hoa.pham@company.com|employee123">NV Tài chính - hoa.pham@company.com</option>
+                        <option value="nam.dang@company.com|employee123">NV Marketing - nam.dang@company.com</option>
+                        <option value="tuan.hoang@company.com|employee123">NV Kinh doanh - tuan.hoang@company.com</option>
+                    </optgroup>
+                </select>
+                <div class="text-muted text-end" style="font-size: 0.65rem; font-style: italic; margin-top: 4px;">
+                    Mật khẩu mặc định: <strong class="text-primary">employee123</strong> / <strong class="text-primary">manager123</strong>
                 </div>
             </div>
         </div>
@@ -127,6 +140,13 @@
         function fillAccount(email, password) {
             document.getElementById("email").value = email;
             document.getElementById("password").value = password;
+        }
+
+        function selectDemoAccount(val) {
+            if (!val) return;
+            var parts = val.split('|');
+            document.getElementById("email").value = parts[0];
+            document.getElementById("password").value = parts[1];
         }
 
         // Hiện/ẩn mật khẩu
