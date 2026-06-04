@@ -108,7 +108,53 @@ public class ManagerScheduleServlet extends HttpServlet {
         String weekOffsetStr = request.getParameter("weekOffset");
         String deptIdStr = request.getParameter("deptId");
 
-        if (idStr == null || idStr.isBlank() || action == null || action.isBlank()) {
+        if (action == null || action.isBlank()) {
+            response.sendRedirect(request.getContextPath() + "/manager/schedules?error=" + encode("Yêu cầu không hợp lệ."));
+            return;
+        }
+
+        int deptId = 0;
+        if (deptIdStr != null && !deptIdStr.isBlank()) {
+            try {
+                deptId = Integer.parseInt(deptIdStr);
+            } catch (NumberFormatException e) {
+                deptId = 0;
+            }
+        }
+        if ("Manager".equals(user.getRoleName())) {
+            deptId = user.getDepartmentID();
+        }
+
+        if ("approveAll".equals(action)) {
+            int weekOffset = 0;
+            if (weekOffsetStr != null && !weekOffsetStr.isBlank()) {
+                try {
+                    weekOffset = Integer.parseInt(weekOffsetStr);
+                } catch (NumberFormatException e) {
+                    weekOffset = 0;
+                }
+            }
+            Calendar cal = Calendar.getInstance();
+            cal.setFirstDayOfWeek(Calendar.MONDAY);
+            if (weekOffset != 0) {
+                cal.add(Calendar.WEEK_OF_YEAR, weekOffset);
+            }
+            cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            Date monday = new Date(cal.getTimeInMillis());
+            cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+            Date sunday = new Date(cal.getTimeInMillis());
+
+            boolean opSuccess = dao.approveAllPending(deptId, monday, sunday);
+            String redirectUrl = request.getContextPath() + "/manager/schedules?weekOffset=" + weekOffsetStr + "&deptId=" + deptIdStr;
+            if (opSuccess) {
+                response.sendRedirect(redirectUrl + "&success=" + encode("Đã duyệt tất cả các ca đang chờ thành công."));
+            } else {
+                response.sendRedirect(redirectUrl + "&error=" + encode("Lỗi xảy ra trong quá trình cập nhật duyệt hàng loạt."));
+            }
+            return;
+        }
+
+        if (idStr == null || idStr.isBlank()) {
             response.sendRedirect(request.getContextPath() + "/manager/schedules?error=" + encode("Yêu cầu không hợp lệ."));
             return;
         }

@@ -77,48 +77,48 @@
                                     <th>Thời gian kết thúc</th>
                                     <th>Mô tả chi tiết</th>
                                     <th>Người tạo</th>
-                                    <% if ("Admin".equals(loggedUser.getRoleName()) || "Manager".equals(loggedUser.getRoleName())) { %>
-                                        <th class="text-end">Thao tác</th>
-                                    <% } %>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% for (Agenda a : list) { %>
-                                    <tr>
-                                        <td>
-                                            <div style="font-weight: 600; color: #1e3a8a;"><%= a.getTitle() %></div>
-                                        </td>
-                                        <td>
-                                            <div style="font-weight: 500;"><i class="fa-regular fa-clock text-primary me-1"></i><%= df.format(a.getStartTime()) %></div>
-                                        </td>
-                                        <td>
-                                            <div style="font-weight: 500;"><i class="fa-regular fa-clock text-secondary me-1"></i><%= df.format(a.getEndTime()) %></div>
-                                        </td>
-                                        <td style="max-width: 300px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-                                            <%= a.getDescription() != null && !a.getDescription().isEmpty() ? a.getDescription() : "<span class='text-muted'>Không có mô tả</span>" %>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-light text-dark border"><%= a.getCreatorName() %></span>
-                                        </td>
-                                        <% if ("Admin".equals(loggedUser.getRoleName()) || "Manager".equals(loggedUser.getRoleName())) { %>
-                                            <td class="text-end">
-                                                <% if (a.getCreatedBy() == loggedUser.getUserID() || "Admin".equals(loggedUser.getRoleName())) { %>
-                                                    <a href="${pageContext.request.contextPath}/agenda/edit?id=<%= a.getAgendaID() %>" 
-                                                       class="btn-custom btn-outline-custom btn-sm-custom py-1 px-2" title="Chỉnh sửa">
-                                                        <i class="fa-solid fa-pen-to-square"></i> Sửa
-                                                    </a>
-                                                    <a href="${pageContext.request.contextPath}/agenda/delete?id=<%= a.getAgendaID() %>" 
-                                                       class="btn-custom btn-danger-custom btn-sm-custom py-1 px-2 ms-1" 
-                                                       onclick="return confirm('Bạn có chắc chắn muốn xóa sự kiện này không?')" title="Xóa">
-                                                        <i class="fa-solid fa-trash"></i> Xóa
-                                                    </a>
-                                                <% } else { %>
-                                                    <span class="text-muted" style="font-size: 0.85rem;"><i class="fa-solid fa-lock me-1"></i>Xem</span>
-                                                <% } %>
-                                            </td>
-                                        <% } %>
-                                    </tr>
-                                <% } %>
+                                         <% if ("Admin".equals(loggedUser.getRoleName()) || "Manager".equals(loggedUser.getRoleName())) { %>
+                                             <th class="text-end">Thao tác</th>
+                                         <% } %>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                                     <% for (Agenda a : list) { %>
+                                         <tr>
+                                             <td>
+                                                 <div class="text-agenda-title"><%= a.getTitle() %></div>
+                                             </td>
+                                             <td>
+                                                 <div class="fw-medium"><i class="fa-regular fa-clock text-primary-custom me-1"></i><%= df.format(a.getStartTime()) %></div>
+                                             </td>
+                                             <td>
+                                                 <div class="fw-medium"><i class="fa-regular fa-clock text-secondary-custom me-1"></i><%= df.format(a.getEndTime()) %></div>
+                                             </td>
+                                             <td style="max-width: 300px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                                                 <%= a.getDescription() != null && !a.getDescription().isEmpty() ? a.getDescription() : "<span class='text-muted-custom'>Không có mô tả</span>" %>
+                                             </td>
+                                             <td>
+                                                 <span class="badge bg-light text-dark border"><%= a.getCreatorName() %></span>
+                                             </td>
+                                             <% if ("Admin".equals(loggedUser.getRoleName()) || "Manager".equals(loggedUser.getRoleName())) { %>
+                                                 <td class="text-end">
+                                                     <% if (a.getCreatedBy() == loggedUser.getUserID() || "Admin".equals(loggedUser.getRoleName())) { %>
+                                                         <a href="${pageContext.request.contextPath}/agenda/edit?id=<%= a.getAgendaID() %>" 
+                                                            class="btn-custom btn-outline-custom btn-sm-custom py-1 px-2" title="Chỉnh sửa">
+                                                             <i class="fa-solid fa-pen-to-square"></i> Sửa
+                                                         </a>
+                                                         <a href="${pageContext.request.contextPath}/agenda/delete?id=<%= a.getAgendaID() %>" 
+                                                            class="btn-custom btn-danger-custom btn-sm-custom py-1 px-2 ms-1" 
+                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa sự kiện này không?')" title="Xóa">
+                                                             <i class="fa-solid fa-trash"></i> Xóa
+                                                         </a>
+                                                     <% } else { %>
+                                                         <span class="small text-secondary-custom"><i class="fa-solid fa-lock me-1"></i>Xem</span>
+                                                     <% } %>
+                                                 </td>
+                                             <% } %>
+                                         </tr>
+                                     <% } %>
                             </tbody>
                         </table>
                     <% } %>

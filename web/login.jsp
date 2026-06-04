@@ -49,6 +49,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="padding: 1.05rem;"></button>
             </div>
         <% } %>
+        <% if (request.getParameter("success") != null) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert" style="font-size: 0.85rem; border-radius: 8px;">
+                <i class="fa-solid fa-circle-check me-2"></i><%= request.getParameter("success") %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="padding: 1.05rem;"></button>
+            </div>
+        <% } %>
 
         <form method="post" action="${pageContext.request.contextPath}/login" id="loginForm" onsubmit="return validateForm()">
             <!-- Email Input -->
@@ -84,6 +90,7 @@
                            <%= request.getAttribute("rememberMeChecked") != null && (boolean)request.getAttribute("rememberMeChecked") ? "checked" : "" %>>
                     <label class="form-check-label" for="rememberMe" style="font-size: 0.85rem; color: var(--text-secondary); cursor: pointer;">Ghi nhớ đăng nhập</label>
                 </div>
+                <a href="${pageContext.request.contextPath}/forgot-password" style="font-size: 0.85rem; text-decoration: none; color: var(--primary); font-weight: 600;">Quên mật khẩu?</a>
             </div>
 
             <!-- Submit Button -->

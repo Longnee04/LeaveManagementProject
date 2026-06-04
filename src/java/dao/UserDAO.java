@@ -222,6 +222,19 @@ public class UserDAO extends DBContext {
         return false;
     }
 
+    // Đặt lại mật khẩu mới qua email
+    public boolean resetPassword(String email, String newPassword) {
+        String sql = "UPDATE Users SET Password = ? WHERE Email = ? AND Status = 1";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, utils.PasswordHash.sha256(newPassword));
+            st.setString(2, email);
+            return st.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error in resetPassword: " + e.getMessage());
+        }
+        return false;
+    }
+
     // Tìm kiếm nhân viên theo tên
     public List<User> searchByName(String keyword) {
         List<User> list = new ArrayList<>();

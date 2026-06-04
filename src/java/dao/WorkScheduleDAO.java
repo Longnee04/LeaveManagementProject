@@ -181,6 +181,42 @@ public class WorkScheduleDAO extends DBContext {
         return false;
     }
 
+    // Duyệt tất cả lịch đang chờ trong tuần của bộ phận
+    public boolean approveAllPending(int deptId, java.sql.Date start, java.sql.Date end) {
+        String sql;
+        if (deptId > 0) {
+            sql = """
+                UPDATE WorkSchedules
+                SET Status = 'Approved'
+                WHERE Status = 'Pending'
+                  AND WorkDate BETWEEN ? AND ?
+                  AND UserID IN (SELECT UserID FROM Users WHERE DepartmentID = ?)
+                """;
+        } else {
+            sql = """
+                UPDATE WorkSchedules
+                SET Status = 'Approved'
+                WHERE Status = 'Pending'
+                  AND WorkDate BETWEEN ? AND ?
+                """;
+        }
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            if (deptId > 0) {
+                st.setDate(1, start);
+                st.setDate(2, end);
+                st.setInt(3, deptId);
+            } else {
+                st.setDate(1, start);
+                st.setDate(2, end);
+            }
+            st.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error in WorkScheduleDAO.approveAllPending: " + e.getMessage());
+        }
+        return false;
+    }
+
     // Kiểm tra ca làm trùng lặp trong cùng ngày của nhân viên
     public boolean isDuplicate(int userId, Date workDate, String shift) {
         String sql = "SELECT ScheduleID FROM WorkSchedules WHERE UserID = ? AND WorkDate = ? AND Shift = ? AND Status != 'Rejected'";

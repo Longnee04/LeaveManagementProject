@@ -344,8 +344,8 @@
                 var dayCardHtml = `
                     <div class="grid-day-card">
                         <div class="grid-day-header">
-                            <span><i class="fa-solid fa-calendar-day text-secondary me-2"></i>${dateDisplay}</span>
-                            <span class="badge bg-secondary-subtle text-secondary" style="font-size: 0.8rem; border: 1px solid var(--border-color);">${dateKey}</span>
+                            <span><i class="fa-solid fa-calendar-day text-secondary me-2"></i>\${dateDisplay}</span>
+                            <span class="badge bg-secondary-subtle text-secondary" style="font-size: 0.8rem; border: 1px solid var(--border-color);">\${dateKey}</span>
                         </div>
                         <div class="grid-day-body">
                             <div class="row align-items-center">
@@ -353,8 +353,8 @@
                                     <div class="shift-pill-group">
                                         <!-- Morning Shift -->
                                         <div class="shift-checkbox-wrapper">
-                                            <input type="checkbox" id="shift_${dateKey}_Morning" name="shift_${dateKey}_Morning" value="Morning">
-                                            <label for="shift_${dateKey}_Morning" class="shift-label-card morning">
+                                            <input type="checkbox" id="shift_\${dateKey}_Morning" name="shift_\${dateKey}_Morning" value="Morning">
+                                            <label for="shift_\${dateKey}_Morning" class="shift-label-card morning">
                                                 <i class="fa-solid fa-sun text-warning"></i>
                                                 <span>Ca Sáng</span>
                                                 <span class="text-muted" style="font-size: 0.75rem; font-weight: 500;">08:00 - 12:00</span>
@@ -363,8 +363,8 @@
                                         
                                         <!-- Afternoon Shift -->
                                         <div class="shift-checkbox-wrapper">
-                                            <input type="checkbox" id="shift_${dateKey}_Afternoon" name="shift_${dateKey}_Afternoon" value="Afternoon">
-                                            <label for="shift_${dateKey}_Afternoon" class="shift-label-card afternoon">
+                                            <input type="checkbox" id="shift_\${dateKey}_Afternoon" name="shift_\${dateKey}_Afternoon" value="Afternoon">
+                                            <label for="shift_\${dateKey}_Afternoon" class="shift-label-card afternoon">
                                                 <i class="fa-solid fa-cloud-sun text-success"></i>
                                                 <span>Ca Chiều</span>
                                                 <span class="text-muted" style="font-size: 0.75rem; font-weight: 500;">13:00 - 17:00</span>
@@ -373,8 +373,8 @@
                                         
                                         <!-- Evening Shift -->
                                         <div class="shift-checkbox-wrapper">
-                                            <input type="checkbox" id="shift_${dateKey}_Evening" name="shift_${dateKey}_Evening" value="Evening">
-                                            <label for="shift_${dateKey}_Evening" class="shift-label-card evening">
+                                            <input type="checkbox" id="shift_\${dateKey}_Evening" name="shift_\${dateKey}_Evening" value="Evening">
+                                            <label for="shift_\${dateKey}_Evening" class="shift-label-card evening">
                                                 <i class="fa-solid fa-moon text-dark"></i>
                                                 <span>Ca Tối</span>
                                                 <span class="text-muted" style="font-size: 0.75rem; font-weight: 500;">18:00 - 22:00</span>
@@ -385,7 +385,7 @@
                                 <div class="col-12 col-lg-5">
                                     <div class="input-group">
                                         <span class="input-group-text bg-light text-secondary" style="border-color: var(--border-color); font-size: 0.9rem;"><i class="fa-solid fa-message"></i></span>
-                                        <input type="text" name="note_${dateKey}" class="form-control-custom form-control" placeholder="Ghi chú cho ngày này (VD: Cần đổi ca, đi trễ...)" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                                        <input type="text" name="note_\${dateKey}" class="form-control-custom form-control" placeholder="Ghi chú cho ngày này (VD: Cần đổi ca, đi trễ...)" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
                                     </div>
                                 </div>
                             </div>

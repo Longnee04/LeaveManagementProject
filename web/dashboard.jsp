@@ -56,9 +56,9 @@
             </div>
 
             <!-- Welcome Banner -->
-            <div class="form-card mb-4" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white;">
-                <h4 class="mb-2" style="font-weight: 700;">Chào mừng trở lại, <%= loggedUser.getFullName() %>!</h4>
-                <p class="m-0 text-white-50" style="font-size: 0.9rem;">
+            <div class="welcome-banner mb-4">
+                <h4 class="mb-2 fw-bold">Chào mừng trở lại, <%= loggedUser.getFullName() %>!</h4>
+                <p class="m-0 text-white-50 small">
                     Hôm nay là ngày <%= dateOnlyFmt.format(new java.util.Date()) %>. Chúc bạn một ngày làm việc hiệu quả và tràn đầy năng lượng!
                 </p>
             </div>
@@ -71,7 +71,7 @@
                         <div class="stat-card primary">
                             <div class="stat-card-info">
                                 <h3>Tổng Nhân sự</h3>
-                                <p><%= totalEmployees %></p>
+                                <p id="stat-totalEmployees" class="m-0"><span class="spinner-border spinner-border-sm text-secondary" role="status"></span></p>
                             </div>
                             <div class="stat-card-icon"><i class="fa-solid fa-users"></i></div>
                         </div>
@@ -80,7 +80,7 @@
                         <div class="stat-card success">
                             <div class="stat-card-info">
                                 <h3>Tổng Đơn nghỉ</h3>
-                                <p><%= totalLeaveRequests %></p>
+                                <p id="stat-totalLeaveRequests" class="m-0"><span class="spinner-border spinner-border-sm text-secondary" role="status"></span></p>
                             </div>
                             <div class="stat-card-icon"><i class="fa-solid fa-file-invoice"></i></div>
                         </div>
@@ -89,7 +89,7 @@
                         <div class="stat-card warning">
                             <div class="stat-card-info">
                                 <h3>Đơn Chờ duyệt</h3>
-                                <p><%= pendingLeaveCount %></p>
+                                <p id="stat-pendingLeaveCount" class="m-0"><span class="spinner-border spinner-border-sm text-secondary" role="status"></span></p>
                             </div>
                             <div class="stat-card-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
                         </div>
@@ -98,7 +98,7 @@
                         <div class="stat-card danger">
                             <div class="stat-card-info">
                                 <h3>Đang Nghỉ hôm nay</h3>
-                                <p><%= todayLeaveCount %></p>
+                                <p id="stat-todayLeaveCount" class="m-0"><span class="spinner-border spinner-border-sm text-secondary" role="status"></span></p>
                             </div>
                             <div class="stat-card-icon"><i class="fa-solid fa-user-slash"></i></div>
                         </div>
@@ -109,7 +109,7 @@
                         <div class="stat-card warning">
                             <div class="stat-card-info">
                                 <h3>Đơn nghỉ chờ duyệt</h3>
-                                <p><%= pendingLeaveCount %></p>
+                                <p id="stat-pendingLeaveCount" class="m-0"><span class="spinner-border spinner-border-sm text-secondary" role="status"></span></p>
                             </div>
                             <div class="stat-card-icon"><i class="fa-solid fa-file-circle-question"></i></div>
                         </div>
@@ -118,7 +118,7 @@
                         <div class="stat-card info">
                             <div class="stat-card-info">
                                 <h3>Lịch làm chờ duyệt</h3>
-                                <p><%= pendingScheduleCount %></p>
+                                <p id="stat-pendingScheduleCount" class="m-0"><span class="spinner-border spinner-border-sm text-secondary" role="status"></span></p>
                             </div>
                             <div class="stat-card-icon"><i class="fa-solid fa-calendar-day"></i></div>
                         </div>
@@ -127,7 +127,7 @@
                         <div class="stat-card success">
                             <div class="stat-card-info">
                                 <h3>Nhân sự hoạt động</h3>
-                                <p><%= totalEmployees %></p>
+                                <p id="stat-totalEmployees" class="m-0"><span class="spinner-border spinner-border-sm text-secondary" role="status"></span></p>
                             </div>
                             <div class="stat-card-icon"><i class="fa-solid fa-user-check"></i></div>
                         </div>
@@ -136,7 +136,7 @@
                         <div class="stat-card danger">
                             <div class="stat-card-info">
                                 <h3>Đang nghỉ hôm nay</h3>
-                                <p><%= todayLeaveCount %></p>
+                                <p id="stat-todayLeaveCount" class="m-0"><span class="spinner-border spinner-border-sm text-secondary" role="status"></span></p>
                             </div>
                             <div class="stat-card-icon"><i class="fa-solid fa-user-xmark"></i></div>
                         </div>
@@ -147,7 +147,7 @@
                         <div class="stat-card primary">
                             <div class="stat-card-info">
                                 <h3>Bộ phận của tôi</h3>
-                                <p style="font-size: 1.15rem; font-weight: 700; margin-top: 5px;"><%= loggedUser.getDepartmentName() != null ? loggedUser.getDepartmentName() : "N/A" %></p>
+                                <p class="fs-6 fw-bold mt-1 text-primary-custom"><%= loggedUser.getDepartmentName() != null ? loggedUser.getDepartmentName() : "N/A" %></p>
                             </div>
                             <div class="stat-card-icon"><i class="fa-solid fa-sitemap"></i></div>
                         </div>
@@ -156,7 +156,7 @@
                         <div class="stat-card success">
                             <div class="stat-card-info">
                                 <h3>Chức vụ vai trò</h3>
-                                <p style="font-size: 1.15rem; font-weight: 700; margin-top: 5px;"><%= loggedUser.getRoleName() %></p>
+                                <p class="fs-6 fw-bold mt-1 text-primary-custom"><%= loggedUser.getRoleName() %></p>
                             </div>
                             <div class="stat-card-icon"><i class="fa-solid fa-id-card"></i></div>
                         </div>
@@ -165,7 +165,7 @@
                         <div class="stat-card info">
                             <div class="stat-card-info">
                                 <h3>Chấm công hôm nay</h3>
-                                <p style="font-size: 1.15rem; font-weight: 700; margin-top: 5px;">Hồ sơ trực tuyến</p>
+                                <p class="fs-6 fw-bold mt-1 text-primary-custom">Hồ sơ trực tuyến</p>
                             </div>
                             <div class="stat-card-icon"><i class="fa-solid fa-fingerprint"></i></div>
                         </div>
@@ -174,7 +174,7 @@
                         <div class="stat-card danger">
                             <div class="stat-card-info">
                                 <h3>Hỗ trợ kỹ thuật</h3>
-                                <p style="font-size: 1.15rem; font-weight: 700; margin-top: 5px;">admin@company.com</p>
+                                <p class="fs-6 fw-bold mt-1 text-primary-custom">admin@company.com</p>
                             </div>
                             <div class="stat-card-icon"><i class="fa-solid fa-headset"></i></div>
                         </div>
@@ -187,7 +187,7 @@
                 <div class="col-12 col-xl-8">
                     <div class="form-card">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="m-0" style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">Đơn nghỉ phép gần đây</h4>
+                            <h4 class="m-0 fs-5 fw-bold text-primary-custom">Đơn nghỉ phép gần đây</h4>
                             <% if ("Employee".equals(role)) { %>
                                 <a href="${pageContext.request.contextPath}/employee/leave-requests" class="btn-custom btn-outline-custom btn-sm-custom">Xem tất cả</a>
                             <% } else if ("Manager".equals(role)) { %>
@@ -198,51 +198,25 @@
                         </div>
                         
                         <div class="table-responsive">
-                            <% if (recentLeaves == null || recentLeaves.isEmpty()) { %>
-                                <div class="empty-state-custom">
-                                    <i class="fa-solid fa-folder-open"></i>
-                                    <p>Không có đơn nghỉ phép nào được ghi nhận gần đây.</p>
-                                </div>
-                            <% } else { %>
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Nhân viên</th>
-                                            <th>Loại nghỉ</th>
-                                            <th>Thời gian</th>
-                                            <th>Trạng thái</th>
-                                            <th>Ngày gửi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% for (LeaveRequest r : recentLeaves) { %>
-                                            <tr>
-                                                <td>
-                                                    <div class="font-weight-bold" style="font-weight: 600;"><%= r.getEmployeeName() %></div>
-                                                    <div style="font-size: 0.75rem; color: var(--text-secondary);"><%= r.getEmployeeEmail() %></div>
-                                                </td>
-                                                <td><%= r.getLeaveTypeName() %></td>
-                                                <td>
-                                                    <div style="font-size: 0.85rem;"><%= dateOnlyFmt.format(r.getStartDate()) %> - <%= dateOnlyFmt.format(r.getEndDate()) %></div>
-                                                </td>
-                                                <td>
-                                                    <%
-                                                        String stClass = "draft";
-                                                        String statusVal = r.getStatus();
-                                                        if ("Pending".equals(statusVal)) stClass = "pending";
-                                                        else if ("Approved".equals(statusVal)) stClass = "approved";
-                                                        else if ("Rejected".equals(statusVal)) stClass = "rejected";
-                                                    %>
-                                                    <span class="status-badge <%= stClass %>"><%= statusVal %></span>
-                                                </td>
-                                                <td style="font-size: 0.8rem; color: var(--text-secondary);">
-                                                    <%= r.getCreatedAt() != null ? df.format(r.getCreatedAt()) : "-" %>
-                                                </td>
-                                            </tr>
-                                        <% } %>
-                                    </tbody>
-                                </table>
-                            <% } %>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nhân viên</th>
+                                        <th>Loại nghỉ</th>
+                                        <th>Thời gian</th>
+                                        <th>Trạng thái</th>
+                                        <th>Ngày gửi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-leaves-table-body">
+                                    <tr id="table-loading-row">
+                                        <td colspan="5" class="text-center py-4">
+                                            <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+                                            <span class="text-muted small ms-2">Đang tải dữ liệu đơn nghỉ...</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -250,7 +224,7 @@
                 <div class="col-12 col-xl-4">
                     <!-- Quick Links Card -->
                     <div class="form-card mb-4">
-                        <h4 class="mb-3" style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">Chức năng nhanh</h4>
+                        <h4 class="mb-3 fs-5 fw-bold text-primary-custom">Chức năng nhanh</h4>
                         <div class="d-grid gap-2">
                             <% if ("Admin".equals(role)) { %>
                                 <a href="${pageContext.request.contextPath}/admin/employees?action=add" class="btn-custom btn-primary-custom w-100"><i class="fa-solid fa-user-plus"></i> Thêm Nhân viên</a>
@@ -271,5 +245,126 @@
         
         <jsp:include page="/WEB-INF/includes/footer.jsp"/>
     </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("${pageContext.request.contextPath}/api/dashboard/summary")
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.json();
+                })
+                .then(data => {
+                    // Populate stats
+                    updateStat("stat-totalEmployees", data.totalEmployees);
+                    updateStat("stat-totalLeaveRequests", data.totalLeaveRequests);
+                    updateStat("stat-pendingLeaveCount", data.pendingLeaveCount);
+                    updateStat("stat-todayLeaveCount", data.todayLeaveCount);
+                    updateStat("stat-pendingScheduleCount", data.pendingScheduleCount);
+                    
+                    // Populate table
+                    const tbody = document.getElementById("recent-leaves-table-body");
+                    if (!tbody) return;
+                    
+                    tbody.innerHTML = "";
+                    if (!data.recentLeaves || data.recentLeaves.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state-custom">
+                                        <i class="fa-solid fa-folder-open"></i>
+                                        <p>Không có đơn nghỉ phép nào được ghi nhận gần đây.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+                    
+                    data.recentLeaves.forEach(r => {
+                        let stClass = "draft";
+                        if (r.status === "Pending") stClass = "pending";
+                        else if (r.status === "Approved") stClass = "approved";
+                        else if (r.status === "Rejected") stClass = "rejected";
+                        
+                        // Format dates
+                        const startStr = formatDate(r.startDate);
+                        const endStr = formatDate(r.endDate);
+                        const createdStr = formatDateTime(r.createdAt);
+                        
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>
+                                <div class="fw-semibold">\${r.employeeName}</div>
+                                <div class="small text-secondary-custom">\${r.employeeEmail}</div>
+                            </td>
+                            <td>\${r.leaveTypeName}</td>
+                            <td>
+                                <div class="small">\${startStr} - \${endStr}</div>
+                            </td>
+                            <td>
+                                <span class="status-badge \${stClass}">\${r.status}</span>
+                            </td>
+                            <td class="small text-secondary-custom">\${createdStr}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error loading dashboard data:", error);
+                    showErrorState();
+                });
+                
+            function updateStat(id, value) {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.innerHTML = value !== undefined ? value : "0";
+                }
+            }
+            
+            function formatDate(dateStr) {
+                if (!dateStr) return "-";
+                const parts = dateStr.split("-");
+                if (parts.length === 3) {
+                    return `\${parts[2]}/\${parts[1]}/\${parts[0]}`;
+                }
+                return dateStr;
+            }
+            
+            function formatDateTime(dateTimeStr) {
+                if (!dateTimeStr) return "-";
+                const tParts = dateTimeStr.split(" ");
+                if (tParts.length >= 1) {
+                    const dateStr = formatDate(tParts[0]);
+                    if (tParts.length >= 2) {
+                        const timeParts = tParts[1].split(":");
+                        if (timeParts.length >= 2) {
+                            return `\${dateStr} \${timeParts[0]}:\${timeParts[1]}`;
+                        }
+                    }
+                    return dateStr;
+                }
+                return dateTimeStr;
+            }
+            
+            function showErrorState() {
+                const tbody = document.getElementById("recent-leaves-table-body");
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-danger">
+                                <i class="fa-solid fa-circle-exclamation fs-3 mb-2"></i>
+                                <div>Không thể tải dữ liệu thống kê từ máy chủ.</div>
+                            </td>
+                        </tr>
+                    `;
+                }
+                // Reset stats loaders to zero or error symbol
+                ["stat-totalEmployees", "stat-totalLeaveRequests", "stat-pendingLeaveCount", "stat-todayLeaveCount", "stat-pendingScheduleCount"].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerHTML = "<span class='text-danger'>!</span>";
+                });
+            }
+        });
+    </script>
 </body>
 </html>

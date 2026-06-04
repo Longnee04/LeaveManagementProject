@@ -41,16 +41,16 @@
         
         <!-- Theme Switcher Dropdown -->
         <div class="dropdown theme-dropdown">
-            <button class="btn-theme-toggle" type="button" id="themeMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Tùy chỉnh giao diện" style="background: none; border: none; font-size: 1.25rem; color: var(--text-secondary); cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; transition: all var(--transition-speed); border: 1px solid var(--border-color);">
+            <button class="btn-theme-toggle" type="button" id="themeMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Tùy chỉnh giao diện">
                 <i class="fa-solid fa-palette"></i>
             </button>
-            <div class="dropdown-menu dropdown-menu-end shadow border-0 p-3" aria-labelledby="themeMenuDropdown" style="width: 250px; border-radius: 12px; margin-top: 10px;">
+            <div class="dropdown-menu dropdown-menu-end shadow border-0 theme-dropdown-menu" aria-labelledby="themeMenuDropdown">
                 <h6 class="mb-3 fw-bold d-flex align-items-center" style="font-size: 0.85rem; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.5px;">
                     <i class="fa-solid fa-sliders text-primary me-2"></i>Tùy chỉnh giao diện
                 </h6>
                 
                 <!-- Dark Mode Toggle -->
-                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom" style="border-color: var(--border-color) !important;">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-color-custom">
                     <span class="fw-semibold text-secondary" style="font-size: 0.825rem;">Chế độ tối (Dark Mode)</span>
                     <div class="form-check form-switch m-0">
                         <input class="form-check-input" type="checkbox" id="darkModeSwitch" style="cursor: pointer;">
@@ -60,11 +60,11 @@
                 <!-- Color Theme Accent Selection -->
                 <span class="fw-semibold text-secondary d-block mb-2" style="font-size: 0.825rem;">Màu chủ đạo</span>
                 <div class="d-flex gap-2 justify-content-between">
-                    <button type="button" class="btn-color-dot" data-color="blue" style="background-color: #3b82f6; width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.2s;" onclick="changeThemeColor('blue')" title="Xanh năng động"></button>
-                    <button type="button" class="btn-color-dot" data-color="green" style="background-color: #10b981; width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.2s;" onclick="changeThemeColor('green')" title="Xanh lục bảo"></button>
-                    <button type="button" class="btn-color-dot" data-color="purple" style="background-color: #8b5cf6; width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.2s;" onclick="changeThemeColor('purple')" title="Tím hoàng gia"></button>
-                    <button type="button" class="btn-color-dot" data-color="red" style="background-color: #ef4444; width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.2s;" onclick="changeThemeColor('red')" title="Đỏ đam mê"></button>
-                    <button type="button" class="btn-color-dot" data-color="orange" style="background-color: #f97316; width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.2s;" onclick="changeThemeColor('orange')" title="Cam hoàng hôn"></button>
+                    <button type="button" class="btn-color-dot" data-color="blue" style="background-color: #3b82f6;" onclick="changeThemeColor('blue')" title="Xanh năng động"></button>
+                    <button type="button" class="btn-color-dot" data-color="green" style="background-color: #10b981;" onclick="changeThemeColor('green')" title="Xanh lục bảo"></button>
+                    <button type="button" class="btn-color-dot" data-color="purple" style="background-color: #8b5cf6;" onclick="changeThemeColor('purple')" title="Tím hoàng gia"></button>
+                    <button type="button" class="btn-color-dot" data-color="red" style="background-color: #ef4444;" onclick="changeThemeColor('red')" title="Đỏ đam mê"></button>
+                    <button type="button" class="btn-color-dot" data-color="orange" style="background-color: #f97316;" onclick="changeThemeColor('orange')" title="Cam hoàng hôn"></button>
                 </div>
             </div>
         </div>

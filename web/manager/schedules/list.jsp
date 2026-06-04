@@ -373,11 +373,23 @@
                 </div>
             </div>
 
-            <!-- Legend Bar -->
-            <div class="legend-bar-matrix">
-                <div class="legend-item"><div class="legend-color approved"></div> Đã phê duyệt (Approved)</div>
-                <div class="legend-item"><div class="legend-color pending"></div> Đang chờ duyệt (Pending)</div>
-                <div class="legend-item"><div class="legend-color rejected"></div> Đã từ chối (Rejected)</div>
+            <!-- Legend & Action Bar -->
+            <div class="legend-bar-matrix d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex gap-4 flex-wrap">
+                    <div class="legend-item"><div class="legend-color approved"></div> Đã phê duyệt (Approved)</div>
+                    <div class="legend-item"><div class="legend-color pending"></div> Đang chờ duyệt (Pending)</div>
+                    <div class="legend-item"><div class="legend-color rejected"></div> Đã từ chối (Rejected)</div>
+                </div>
+                <div>
+                    <form method="post" action="${pageContext.request.contextPath}/manager/schedules" class="m-0" onsubmit="return confirm('Bạn có chắc chắn muốn duyệt tất cả các ca đang chờ (Pending) trong tuần này không?')">
+                        <input type="hidden" name="action" value="approveAll">
+                        <input type="hidden" name="weekOffset" value="<%= weekOffset %>">
+                        <input type="hidden" name="deptId" value="<%= deptId %>">
+                        <button type="submit" class="btn-custom btn-success-custom py-2 px-3 fw-bold" style="font-size: 0.85rem; border-radius: 8px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);">
+                            <i class="fa-solid fa-check-double me-1"></i> Duyệt tất cả ca đang chờ
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <!-- Matrix Scheduling Board Grid -->
@@ -561,7 +573,6 @@
     </div>
 
     <!-- Bootstrap JS Bundle and Modal Script -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         var reviewModal;
         document.addEventListener("DOMContentLoaded", function() {

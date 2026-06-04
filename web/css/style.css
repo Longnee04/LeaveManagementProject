@@ -118,6 +118,7 @@ body {
     display: flex;
     flex-direction: column;
     transition: transform var(--transition-speed);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
 }
 
 .sidebar-header {
@@ -126,7 +127,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: 0 24px;
-    border-bottom: 1px solid #2e3c51;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .sidebar-brand {
@@ -144,9 +145,6 @@ body {
 }
 
 .sidebar-menu {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px 16px;
     list-style: none;
 }
 
@@ -170,11 +168,37 @@ body {
 .sidebar-menu-link:hover {
     background-color: var(--sidebar-active);
     color: var(--sidebar-text-active);
+    transform: translateX(4px);
 }
 
 .sidebar-menu-item.active .sidebar-menu-link {
-    background-color: var(--primary);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
     color: var(--sidebar-text-active);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    font-weight: 600;
+}
+
+/* Sidebar Logout Button */
+.sidebar-logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #ef4444 !important;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.925rem;
+    transition: all var(--transition-speed);
+    background-color: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+.sidebar-logout-btn:hover {
+    background-color: #ef4444;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+    transform: translateY(-1px);
 }
 
 /* Main Content Area */
@@ -637,4 +661,157 @@ body {
         flex-direction: column;
         align-items: flex-start;
     }
+}
+
+/* ==========================================================================
+   MINI HRM DESIGN SYSTEM EXTENSIONS
+   ========================================================================== */
+
+/* Webkit Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--body-bg);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Welcome Banner Component */
+.welcome-banner {
+    background: linear-gradient(135deg, #1e293b 0%, var(--primary) 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 28px !important;
+    border-radius: 12px;
+}
+[data-theme="dark"] .welcome-banner {
+    background: linear-gradient(135deg, #0f172a 0%, var(--primary) 100%) !important;
+}
+.welcome-banner p {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Theme Customizer Styling */
+.btn-theme-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    transition: all var(--transition-speed);
+}
+.btn-theme-toggle:hover {
+    background-color: var(--primary-subtle);
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.theme-dropdown-menu {
+    width: 260px;
+    border-radius: 12px;
+    margin-top: 10px;
+    padding: 16px;
+}
+
+.btn-color-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+.btn-color-dot:hover {
+    transform: scale(1.1);
+}
+.btn-color-dot.active {
+    border-color: var(--text-primary) !important;
+    transform: scale(1.18);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Agenda / Custom list text styling */
+.text-agenda-title {
+    font-weight: 600;
+    color: var(--primary) !important;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+.text-agenda-title:hover {
+    color: var(--primary-hover) !important;
+}
+
+/* Card, list-group, pagination, and modal theme overrides */
+.card, .form-card {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+.list-group-item {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.modal-content {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+.modal-header, .modal-footer {
+    border-color: var(--border-color) !important;
+}
+
+.page-link {
+    background-color: var(--card-bg) !important;
+    color: var(--primary) !important;
+    border-color: var(--border-color) !important;
+}
+.page-link:hover {
+    background-color: var(--table-row-hover) !important;
+    color: var(--primary-hover) !important;
+    border-color: var(--border-color) !important;
+}
+.page-item.active .page-link {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+}
+.page-item.disabled .page-link {
+    background-color: var(--card-bg) !important;
+    color: var(--text-secondary) !important;
+    border-color: var(--border-color) !important;
+    opacity: 0.6;
+}
+
+.text-primary-custom {
+    color: var(--primary) !important;
+}
+.text-secondary-custom {
+    color: var(--text-secondary) !important;
+}
+.border-color-custom {
+    border-color: var(--border-color) !important;
+}
+
+/* Quick link buttons dynamic updates */
+.btn-custom {
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+.btn-custom:hover {
+    transform: translateY(-2px);
 }
