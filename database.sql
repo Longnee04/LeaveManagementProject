@@ -129,16 +129,8 @@ INSERT INTO Roles(RoleName) VALUES ('Admin'), ('Manager'), ('Employee');
 
 -- Users (password plain text for development)
 INSERT INTO Users (FullName, Email, Phone, Password, RoleID, DepartmentID) VALUES
--- Department 1: Administration (1 Admin, 1 Manager, 7 Employees = 9 members)
+-- Department 1: Administration (Only 1 Admin account)
 (N'Administrator', 'admin@company.com', '0123456789', 'admin123', 1, 1),
-(N'Nguyễn Văn Giám Đốc', 'director.admin@company.com', '0901112222', 'manager123', 2, 1),
-(N'Nguyễn Thị Trợ Lý', 'assistant1.admin@company.com', '0903334444', 'employee123', 3, 1),
-(N'Phạm Văn Thư Ký', 'sec1.admin@company.com', '0905556666', 'employee123', 3, 1),
-(N'Lê Văn Hành Chính', 'staff1.admin@company.com', '0907778888', 'employee123', 3, 1),
-(N'Trần Thị Pháp Chế', 'staff2.admin@company.com', '0909990000', 'employee123', 3, 1),
-(N'Vũ Hoàng Gia', 'staff3.admin@company.com', '0901113333', 'employee123', 3, 1),
-(N'Nguyễn Khắc Tiệp', 'staff4.admin@company.com', '0902224444', 'employee123', 3, 1),
-(N'Phan Thanh Sơn', 'staff5.admin@company.com', '0903335555', 'employee123', 3, 1),
 
 -- Department 2: Human Resources (1 Manager, 8 Employees = 9 members)
 (N'Nguyễn Văn Quản Lý', 'manager@company.com', '0987654321', 'manager123', 2, 2),
