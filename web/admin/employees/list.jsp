@@ -131,6 +131,10 @@
                                             <% } %>
                                         </td>
                                         <td class="text-end">
+                                            <a href="${pageContext.request.contextPath}/admin/employees?action=balances&id=<%= emp.getUserID() %>" 
+                                               class="btn-custom btn-secondary-custom btn-sm-custom py-1 px-2 me-1" title="Số dư nghỉ phép">
+                                                <i class="fa-solid fa-scale-balanced"></i> Phép
+                                            </a>
                                             <a href="${pageContext.request.contextPath}/admin/employees?action=edit&id=<%= emp.getUserID() %>" 
                                                class="btn-custom btn-outline-custom btn-sm-custom py-1 px-2" title="Chỉnh sửa">
                                                 <i class="fa-solid fa-pen-to-square"></i> Sửa

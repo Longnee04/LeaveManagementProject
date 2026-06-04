@@ -19,6 +19,8 @@ public class LeaveRequest {
     private String managerComment;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private double duration;
+    private String minUnitChosen;
 
     public int getRequestID() { return requestID; }
     public void setRequestID(int requestID) { this.requestID = requestID; }
@@ -65,11 +67,13 @@ public class LeaveRequest {
     public Timestamp getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
 
-    public int getTotalDays() {
-        if (startDate == null || endDate == null) {
-            return 0;
-        }
-        long diff = endDate.toLocalDate().toEpochDay() - startDate.toLocalDate().toEpochDay();
-        return (int) diff + 1;
+    public double getDuration() { return duration; }
+    public void setDuration(double duration) { this.duration = duration; }
+
+    public String getMinUnitChosen() { return minUnitChosen; }
+    public void setMinUnitChosen(String minUnitChosen) { this.minUnitChosen = minUnitChosen; }
+
+    public double getTotalDays() {
+        return duration;
     }
 }

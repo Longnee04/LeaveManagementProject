@@ -56,8 +56,10 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        UserDAO userDAO = new UserDAO();
-        User user = userDAO.login(email.trim(), password);
+        User user;
+        try (UserDAO userDAO = new UserDAO()) {
+            user = userDAO.login(email.trim(), password);
+        }
 
         if (user == null) {
             request.setAttribute("error", "Email hoặc mật khẩu không đúng, hoặc tài khoản đã bị khóa.");

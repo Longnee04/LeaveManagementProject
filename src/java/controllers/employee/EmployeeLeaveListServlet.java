@@ -1,5 +1,6 @@
 package controllers.employee;
 
+import dao.EmployeeLeaveBalanceDAO;
 import dao.LeaveRequestDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,6 +8,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import models.EmployeeLeaveBalance;
 import models.LeaveRequest;
 import models.User;
 import utils.SessionKeys;
@@ -18,8 +21,17 @@ public class EmployeeLeaveListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute(SessionKeys.USER);
-        LeaveRequestDAO dao = new LeaveRequestDAO();
-        request.setAttribute("requests", dao.findByUserId(user.getUserID()));
+        
+        List<LeaveRequest> requests;
+        List<EmployeeLeaveBalance> balances;
+        try (LeaveRequestDAO dao = new LeaveRequestDAO();
+             EmployeeLeaveBalanceDAO balanceDAO = new EmployeeLeaveBalanceDAO()) {
+            requests = dao.findByUserId(user.getUserID());
+            balances = balanceDAO.findByUserId(user.getUserID());
+        }
+        
+        request.setAttribute("requests", requests);
+        request.setAttribute("balances", balances);
         request.getRequestDispatcher("/employee/leave/list.jsp").forward(request, response);
     }
 }

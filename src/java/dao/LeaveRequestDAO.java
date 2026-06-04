@@ -15,6 +15,7 @@ public class LeaveRequestDAO extends DBContext {
     private static final String SELECT_COLUMNS = """
             lr.RequestID, lr.UserID, lr.LeaveTypeID, lr.StartDate, lr.EndDate,
             lr.Reason, lr.Status, lr.ManagerComment, lr.CreatedAt, lr.UpdatedAt,
+            lr.Duration, lr.MinUnitChosen,
             u.FullName AS EmployeeName, u.Email AS EmployeeEmail,
             u.DepartmentID, d.DepartmentName,
             lt.LeaveTypeName
@@ -29,8 +30,8 @@ public class LeaveRequestDAO extends DBContext {
 
     public int insert(LeaveRequest request) {
         String sql = """
-            INSERT INTO LeaveRequests (UserID, LeaveTypeID, StartDate, EndDate, Reason, Status)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO LeaveRequests (UserID, LeaveTypeID, StartDate, EndDate, Reason, Status, Duration, MinUnitChosen)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """;
         try (PreparedStatement st = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             st.setInt(1, request.getUserID());
@@ -39,6 +40,9 @@ public class LeaveRequestDAO extends DBContext {
             st.setDate(4, request.getEndDate());
             st.setString(5, request.getReason());
             st.setString(6, request.getStatus());
+            st.setDouble(7, request.getDuration());
+            st.setString(8, request.getMinUnitChosen());
+            
             int affected = st.executeUpdate();
             if (affected > 0) {
                 try (ResultSet keys = st.getGeneratedKeys()) {
@@ -48,7 +52,7 @@ public class LeaveRequestDAO extends DBContext {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in insert: " + e.getMessage());
         }
         return -1;
     }
@@ -56,7 +60,8 @@ public class LeaveRequestDAO extends DBContext {
     public boolean updateDraft(LeaveRequest request) {
         String sql = """
             UPDATE LeaveRequests
-            SET LeaveTypeID = ?, StartDate = ?, EndDate = ?, Reason = ?, Status = ?, UpdatedAt = GETDATE()
+            SET LeaveTypeID = ?, StartDate = ?, EndDate = ?, Reason = ?, Status = ?, 
+                Duration = ?, MinUnitChosen = ?, UpdatedAt = GETDATE()
             WHERE RequestID = ? AND UserID = ? AND Status = ?
             """;
         try (PreparedStatement st = connection.prepareStatement(sql)) {
@@ -65,12 +70,14 @@ public class LeaveRequestDAO extends DBContext {
             st.setDate(3, request.getEndDate());
             st.setString(4, request.getReason());
             st.setString(5, request.getStatus());
-            st.setInt(6, request.getRequestID());
-            st.setInt(7, request.getUserID());
-            st.setString(8, LeaveStatus.DRAFT);
+            st.setDouble(6, request.getDuration());
+            st.setString(7, request.getMinUnitChosen());
+            st.setInt(8, request.getRequestID());
+            st.setInt(9, request.getUserID());
+            st.setString(10, LeaveStatus.DRAFT);
             return st.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in updateDraft: " + e.getMessage());
         }
         return false;
     }
@@ -88,7 +95,7 @@ public class LeaveRequestDAO extends DBContext {
             st.setString(4, LeaveStatus.DRAFT);
             return st.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in submitDraft: " + e.getMessage());
         }
         return false;
     }
@@ -101,7 +108,7 @@ public class LeaveRequestDAO extends DBContext {
             st.setString(3, LeaveStatus.DRAFT);
             return st.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in deleteDraft: " + e.getMessage());
         }
         return false;
     }
@@ -119,7 +126,7 @@ public class LeaveRequestDAO extends DBContext {
             st.setString(4, LeaveStatus.PENDING);
             return st.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in review: " + e.getMessage());
         }
         return false;
     }
@@ -134,7 +141,7 @@ public class LeaveRequestDAO extends DBContext {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in findById: " + e.getMessage());
         }
         return null;
     }
@@ -151,7 +158,7 @@ public class LeaveRequestDAO extends DBContext {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in findByIdAndUser: " + e.getMessage());
         }
         return null;
     }
@@ -168,42 +175,56 @@ public class LeaveRequestDAO extends DBContext {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in findByUserId: " + e.getMessage());
         }
         return list;
     }
 
-    public List<LeaveRequest> findPendingForReview() {
+    // Danh sách đơn chờ duyệt (Manager lọc theo DepartmentID, Admin thì lấy hết)
+    public List<LeaveRequest> findPendingForReview(int deptId) {
         List<LeaveRequest> list = new ArrayList<>();
-        String sql = "SELECT " + SELECT_COLUMNS + " " + FROM_JOIN
-                + " WHERE lr.Status = ? ORDER BY lr.CreatedAt ASC";
+        String sql = "SELECT " + SELECT_COLUMNS + " " + FROM_JOIN + " WHERE lr.Status = ? ";
+        if (deptId > 0) {
+            sql += " AND u.DepartmentID = ? ";
+        }
+        sql += " ORDER BY lr.CreatedAt ASC";
         try (PreparedStatement st = connection.prepareStatement(sql)) {
             st.setString(1, LeaveStatus.PENDING);
+            if (deptId > 0) {
+                st.setInt(2, deptId);
+            }
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
                     list.add(mapRow(rs));
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in findPendingForReview: " + e.getMessage());
         }
         return list;
     }
 
-    public List<LeaveRequest> findReviewedByManager() {
+    // Lịch sử duyệt (Manager lọc theo DepartmentID, Admin lấy hết)
+    public List<LeaveRequest> findReviewedByManager(int deptId) {
         List<LeaveRequest> list = new ArrayList<>();
-        String sql = "SELECT " + SELECT_COLUMNS + " " + FROM_JOIN
-                + " WHERE lr.Status IN (?, ?) ORDER BY lr.UpdatedAt DESC";
+        String sql = "SELECT " + SELECT_COLUMNS + " " + FROM_JOIN + " WHERE lr.Status IN (?, ?) ";
+        if (deptId > 0) {
+            sql += " AND u.DepartmentID = ? ";
+        }
+        sql += " ORDER BY lr.UpdatedAt DESC";
         try (PreparedStatement st = connection.prepareStatement(sql)) {
             st.setString(1, LeaveStatus.APPROVED);
             st.setString(2, LeaveStatus.REJECTED);
+            if (deptId > 0) {
+                st.setInt(3, deptId);
+            }
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
                     list.add(mapRow(rs));
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in findReviewedByManager: " + e.getMessage());
         }
         return list;
     }
@@ -220,6 +241,8 @@ public class LeaveRequestDAO extends DBContext {
         req.setManagerComment(rs.getString("ManagerComment"));
         req.setCreatedAt(rs.getTimestamp("CreatedAt"));
         req.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+        req.setDuration(rs.getDouble("Duration"));
+        req.setMinUnitChosen(rs.getString("MinUnitChosen"));
         req.setEmployeeName(rs.getString("EmployeeName"));
         req.setEmployeeEmail(rs.getString("EmployeeEmail"));
         req.setLeaveTypeName(rs.getString("LeaveTypeName"));
@@ -239,7 +262,7 @@ public class LeaveRequestDAO extends DBContext {
                 return rs.getInt(1);
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in countAll: " + e.getMessage());
         }
         return 0;
     }
@@ -254,7 +277,7 @@ public class LeaveRequestDAO extends DBContext {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in countByStatus: " + e.getMessage());
         }
         return 0;
     }
@@ -269,7 +292,7 @@ public class LeaveRequestDAO extends DBContext {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in countTodayLeaves: " + e.getMessage());
         }
         return 0;
     }
@@ -283,9 +306,8 @@ public class LeaveRequestDAO extends DBContext {
                 list.add(mapRow(rs));
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in findAll: " + e.getMessage());
         }
         return list;
     }
 }
-

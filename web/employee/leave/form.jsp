@@ -2,12 +2,14 @@
 <%@page import="java.util.List"%>
 <%@page import="models.LeaveType"%>
 <%@page import="models.LeaveRequest"%>
+<%@page import="models.EmployeeLeaveBalance"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%
     String mode = (String) request.getAttribute("mode");
     boolean isEdit = "edit".equals(mode);
     LeaveRequest lr = (LeaveRequest) request.getAttribute("leaveRequest");
     List<LeaveType> leaveTypes = (List<LeaveType>) request.getAttribute("leaveTypes");
+    List<EmployeeLeaveBalance> balances = (List<EmployeeLeaveBalance>) request.getAttribute("balances");
     SimpleDateFormat iso = new SimpleDateFormat("yyyy-MM-dd");
 
     String leaveTypeId = request.getAttribute("leaveTypeId") != null
@@ -22,6 +24,9 @@
     String reason = request.getAttribute("reason") != null
             ? String.valueOf(request.getAttribute("reason"))
             : (lr != null && lr.getReason() != null ? lr.getReason() : "");
+    String minUnitChosen = request.getAttribute("minUnitChosen") != null
+            ? String.valueOf(request.getAttribute("minUnitChosen"))
+            : (lr != null && lr.getMinUnitChosen() != null ? lr.getMinUnitChosen() : "Full");
             
     String pageTitle = isEdit ? "Chỉnh sửa Đơn nghỉ phép" : "Tạo Đơn nghỉ phép mới";
 %>
@@ -39,6 +44,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Global Style CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <style>
+        .balance-info-badge {
+            background-color: var(--body-bg);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 8px;
+            display: none;
+            transition: all 0.3s ease;
+        }
+        .balance-info-val {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .duration-preview {
+            font-size: 0.9rem;
+            color: var(--success);
+            font-weight: 600;
+            margin-top: 6px;
+        }
+    </style>
 </head>
 <body>
     <jsp:include page="/WEB-INF/includes/sidebar.jsp"/>
@@ -80,30 +106,48 @@
                             <% } %>
 
                             <!-- Leave Type -->
-                            <div class="form-group-custom">
+                            <div class="form-group-custom mb-3">
                                 <label for="leaveTypeId" class="form-label-custom">Loại nghỉ phép <span class="text-danger">*</span></label>
-                                <select id="leaveTypeId" name="leaveTypeId" class="form-select form-control" required>
+                                <select id="leaveTypeId" name="leaveTypeId" class="form-select form-control" onchange="onLeaveTypeChange()" required>
                                     <option value="">-- Chọn loại nghỉ --</option>
                                     <% if (leaveTypes != null) {
                                         for (LeaveType t : leaveTypes) {
                                             String selected = String.valueOf(t.getLeaveTypeID()).equals(leaveTypeId) ? "selected" : "";
                                     %>
-                                    <option value="<%= t.getLeaveTypeID() %>" <%= selected %> data-max="<%= t.getMaxDays() %>">
-                                        <%= t.getLeaveTypeName() %> (tối đa <%= t.getMaxDays() %> ngày)
+                                    <option value="<%= t.getLeaveTypeID() %>" <%= selected %> 
+                                            data-max="<%= t.getMaxDays() %>"
+                                            data-unit="<%= t.getMinUnit() %>"
+                                            data-working-only="<%= t.isIsWorkingDaysOnly() ? "1" : "0" %>"
+                                            data-restricted="<%= t.isNewEmployeeRestricted() ? "1" : "0" %>">
+                                        <%= t.getLeaveTypeName() %>
                                     </option>
                                     <%   }
                                        } %>
                                 </select>
                                 <div class="invalid-feedback">Vui lòng chọn loại nghỉ phép.</div>
+                                
+                                <!-- Dynamic Balance Badge -->
+                                <div id="balanceBadge" class="balance-info-badge">
+                                    <div class="row">
+                                        <div class="col-6 text-start">
+                                            <span style="font-size: 0.85rem; color: var(--text-secondary);">Hạn mức cả năm:</span>
+                                            <span id="quotaVal" class="fw-semibold ms-1 text-dark">0 ngày</span>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <span style="font-size: 0.85rem; color: var(--text-secondary);">Số dư còn lại:</span>
+                                            <span id="remainingVal" class="balance-info-val ms-1">0 ngày</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             
                             <!-- Start Date & End Date -->
-                            <div class="row">
+                            <div class="row mb-3">
                                 <div class="col-12 col-sm-6">
                                     <div class="form-group-custom">
                                         <label for="startDate" class="form-label-custom">Ngày bắt đầu <span class="text-danger">*</span></label>
                                         <input type="date" id="startDate" name="startDate" class="form-control-custom form-control" 
-                                               value="<%= startDate %>" required>
+                                               value="<%= startDate %>" onchange="onDateChange()" required>
                                         <div class="invalid-feedback">Ngày bắt đầu không hợp lệ.</div>
                                     </div>
                                 </div>
@@ -111,20 +155,35 @@
                                     <div class="form-group-custom">
                                         <label for="endDate" class="form-label-custom">Ngày kết thúc <span class="text-danger">*</span></label>
                                         <input type="date" id="endDate" name="endDate" class="form-control-custom form-control" 
-                                               value="<%= endDate %>" required>
+                                               value="<%= endDate %>" onchange="onDateChange()" required>
                                         <div class="invalid-feedback" id="endDateFeedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Min Unit Chosen (Half Day selection) -->
+                            <div class="form-group-custom mb-3" id="minUnitContainer" style="display: none;">
+                                <label for="minUnitChosen" class="form-label-custom">Hình thức nghỉ phép <span class="text-danger">*</span></label>
+                                <select id="minUnitChosen" name="minUnitChosen" class="form-select form-control" onchange="calculateDurationDisplay()">
+                                    <option value="Full" <%= "Full".equals(minUnitChosen) ? "selected" : "" %>>Cả ngày (1.0 ngày)</option>
+                                    <option value="Morning" <%= "Morning".equals(minUnitChosen) ? "selected" : "" %>>Nửa ngày Sáng (0.5 ngày)</option>
+                                    <option value="Afternoon" <%= "Afternoon".equals(minUnitChosen) ? "selected" : "" %>>Nửa ngày Chiều (0.5 ngày)</option>
+                                </select>
+                            </div>
+
+                            <!-- Duration Display -->
+                            <div id="durationPreview" class="duration-preview text-primary mb-3" style="display: none;">
+                                <i class="fa-solid fa-calculator me-1"></i> Số ngày tính nghỉ: <span id="durationVal">0</span> ngày
+                            </div>
                             
                             <!-- Reason -->
-                            <div class="form-group-custom">
+                            <div class="form-group-custom mb-3">
                                 <label for="reason" class="form-label-custom">Lý do nghỉ phép</label>
                                 <textarea id="reason" name="reason" class="form-control-custom form-control" 
-                                          style="height: 120px; resize: vertical;" maxlength="500" 
+                                          style="height: 100px; resize: vertical;" maxlength="500" 
                                           placeholder="Mô tả lý do xin nghỉ phép cụ thể (tối đa 500 ký tự)..."><%= reason %></textarea>
                                 <span class="form-hint d-block mt-1" style="font-size: 0.8rem; color: var(--text-secondary);">
-                                    <i class="fa-solid fa-circle-info me-1 text-primary"></i>Khuyến nghị điền đầy đủ thông tin để Quản lý dễ dàng xét duyệt.
+                                    <i class="fa-solid fa-circle-info me-1 text-primary"></i>Hệ thống sẽ tự động loại trừ Thứ 7 và Chủ nhật đối với các loại phép năm.
                                 </span>
                             </div>
                             
@@ -146,10 +205,10 @@
                                         Quay lại
                                     </a>
                                     <button type="submit" name="action" value="draft" class="btn-custom btn-outline-custom">
-                                        <i class="fa-solid fa-file-pen"></i> Lưu nháp (Draft)
+                                        <i class="fa-solid fa-file-pen"></i> Lưu nháp
                                     </button>
                                     <button type="submit" name="action" value="submit" class="btn-custom btn-success-custom">
-                                        <i class="fa-solid fa-paper-plane"></i> Gửi duyệt (Submit)
+                                        <i class="fa-solid fa-paper-plane"></i> Gửi duyệt
                                     </button>
                                 </div>
                             </div>
@@ -162,26 +221,120 @@
         <jsp:include page="/WEB-INF/includes/footer.jsp"/>
     </div>
 
+    <!-- Client-side Employee Balances Data mapping -->
     <script>
+        var userBalances = {
+            <% if (balances != null) {
+                for (EmployeeLeaveBalance b : balances) { %>
+                    "<%= b.getLeaveTypeID() %>": {
+                        quota: <%= b.getAnnualQuota() %>,
+                        used: <%= b.getUsedDays() %>,
+                        remaining: <%= b.getRemainingDays() %>
+                    },
+            <%  }
+               } %>
+        };
+
         // Thiết lập min date cho date picker là ngày hôm nay
         document.addEventListener("DOMContentLoaded", function() {
             var today = new Date().toISOString().split('T')[0];
             document.getElementById("startDate").setAttribute('min', today);
             document.getElementById("endDate").setAttribute('min', today);
+            
+            // Trigger load ban đầu nếu có dữ liệu sẵn (khi Edit hoặc Validate Error)
+            onLeaveTypeChange();
         });
 
+        function onLeaveTypeChange() {
+            var select = document.getElementById("leaveTypeId");
+            var typeId = select.value;
+            var balanceBadge = document.getElementById("balanceBadge");
+            
+            if (typeId && userBalances[typeId]) {
+                var bal = userBalances[typeId];
+                document.getElementById("quotaVal").innerText = bal.quota + " ngày";
+                document.getElementById("remainingVal").innerText = bal.remaining + " ngày";
+                balanceBadge.style.display = "block";
+            } else {
+                balanceBadge.style.display = "none";
+            }
+            
+            onDateChange(); // Recalculate duration options when leave type changes
+        }
+
+        function onDateChange() {
+            var startVal = document.getElementById("startDate").value;
+            var endVal = document.getElementById("endDate").value;
+            var select = document.getElementById("leaveTypeId");
+            var option = select.options[select.selectedIndex];
+            
+            var unitContainer = document.getElementById("minUnitContainer");
+            
+            if (startVal && endVal && startVal === endVal && option && option.getAttribute("data-unit") === "Half-Day") {
+                // Hiển thị lựa chọn nửa ngày nếu ngày bắt đầu trùng ngày kết thúc và loại nghỉ hỗ trợ nửa ngày
+                unitContainer.style.display = "block";
+            } else {
+                unitContainer.style.display = "none";
+                document.getElementById("minUnitChosen").value = "Full";
+            }
+            
+            calculateDurationDisplay();
+        }
+
+        function calculateDurationDisplay() {
+            var startStr = document.getElementById("startDate").value;
+            var endStr = document.getElementById("endDate").value;
+            var select = document.getElementById("leaveTypeId");
+            var option = select.options[select.selectedIndex];
+            var minUnitChosen = document.getElementById("minUnitChosen").value;
+            
+            var preview = document.getElementById("durationPreview");
+            
+            if (!startStr || !endStr || !option || option.value === "") {
+                preview.style.display = "none";
+                return;
+            }
+
+            var start = new Date(startStr);
+            var end = new Date(endStr);
+            
+            if (end < start) {
+                preview.style.display = "none";
+                return;
+            }
+
+            var duration = 0;
+            if (startStr === endStr && minUnitChosen !== "Full") {
+                duration = 0.5;
+            } else {
+                var workingOnly = option.getAttribute("data-working-only") === "1";
+                var curr = new Date(start);
+                while (curr <= end) {
+                    var day = curr.getDay();
+                    if (!workingOnly || (day !== 0 && day !== 6)) { // 0 = Chủ nhật, 6 = Thứ bảy
+                        duration += 1;
+                    }
+                    curr.setDate(curr.getDate() + 1);
+                }
+            }
+
+            document.getElementById("durationVal").innerText = duration;
+            preview.style.display = "block";
+        }
+
         function validateForm() {
-            var type = document.getElementById("leaveTypeId").value;
+            var typeSelect = document.getElementById("leaveTypeId");
+            var type = typeSelect.value;
             var startStr = document.getElementById("startDate").value;
             var endStr = document.getElementById("endDate").value;
             var isValid = true;
             
-            document.getElementById("leaveTypeId").classList.remove("is-invalid");
+            typeSelect.classList.remove("is-invalid");
             document.getElementById("startDate").classList.remove("is-invalid");
             document.getElementById("endDate").classList.remove("is-invalid");
             
             if (!type) {
-                document.getElementById("leaveTypeId").classList.add("is-invalid");
+                typeSelect.classList.add("is-invalid");
                 isValid = false;
             }
             if (!startStr) {
@@ -200,6 +353,16 @@
                 if (end < start) {
                     document.getElementById("endDate").classList.add("is-invalid");
                     document.getElementById("endDateFeedback").innerText = "Ngày kết thúc không được nhỏ hơn ngày bắt đầu.";
+                    isValid = false;
+                }
+            }
+            
+            // Validate client-side leave balance
+            if (isValid && type && userBalances[type]) {
+                var duration = parseFloat(document.getElementById("durationVal").innerText);
+                var remaining = userBalances[type].remaining;
+                if (duration > remaining) {
+                    alert("Số dư nghỉ phép của bạn không đủ (" + remaining + " ngày còn lại) để thực hiện yêu cầu nghỉ " + duration + " ngày.");
                     isValid = false;
                 }
             }

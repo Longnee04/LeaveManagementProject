@@ -81,6 +81,40 @@
                                        value="<%= isEdit ? type.getMaxDays() : "12" %>" required min="1" placeholder="Nhập số ngày phép tối đa (ví dụ: 12)">
                                 <div class="invalid-feedback">Số ngày nghỉ tối đa phải lớn hơn 0.</div>
                             </div>
+
+                            <!-- Min Unit selection -->
+                            <div class="form-group-custom">
+                                <label for="minUnit" class="form-label-custom">Đơn vị nghỉ tối thiểu <span class="text-danger">*</span></label>
+                                <select id="minUnit" name="minUnit" class="form-select form-control" required>
+                                    <option value="Day" <%= isEdit && "Day".equalsIgnoreCase(type.getMinUnit()) ? "selected" : "" %>>Theo ngày (Full Day)</option>
+                                    <option value="Half-Day" <%= isEdit && "Half-Day".equalsIgnoreCase(type.getMinUnit()) ? "selected" : "" %>>Theo nửa ngày (Half-Day - 0.5 ngày)</option>
+                                </select>
+                                <div class="form-text text-muted small mt-1">Quyết định xem nhân viên có được đăng ký nghỉ nửa ngày (Morning/Afternoon) đối với loại phép này không.</div>
+                            </div>
+
+                            <!-- Is Working Days Only Toggle -->
+                            <div class="form-group-custom mt-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="isWorkingDaysOnly" name="isWorkingDaysOnly" value="1" 
+                                           <%= isEdit && type.isIsWorkingDaysOnly() ? "checked" : "" %>>
+                                    <label class="form-check-label fw-semibold" for="isWorkingDaysOnly" style="color: var(--text-primary);">
+                                        Chỉ tính ngày làm việc (Loại bỏ Thứ 7 & Chủ Nhật)
+                                    </label>
+                                </div>
+                                <div class="form-text text-muted small mt-1">Khi được bật, đơn nghỉ phép đi qua cuối tuần sẽ không bị tính số ngày nghỉ cho thứ 7 và chủ nhật.</div>
+                            </div>
+
+                            <!-- New Employee Probation Restricted Toggle -->
+                            <div class="form-group-custom mt-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="newEmployeeRestricted" name="newEmployeeRestricted" value="1" 
+                                           <%= isEdit && type.isNewEmployeeRestricted() ? "checked" : "" %>>
+                                    <label class="form-check-label fw-semibold" for="newEmployeeRestricted" style="color: var(--text-primary);">
+                                        Giới hạn nhân viên mới thử việc
+                                    </label>
+                                </div>
+                                <div class="form-text text-muted small mt-1">Nhân viên mới làm việc dưới 30 ngày sẽ không được đăng ký loại nghỉ phép này.</div>
+                            </div>
                             
                             <hr class="my-4" style="border-color: var(--border-color);">
                             

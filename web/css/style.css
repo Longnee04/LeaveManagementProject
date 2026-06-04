@@ -7,31 +7,85 @@
 
 :root {
     --sidebar-width: 260px;
-    --sidebar-bg: #1e293b;
-    --sidebar-active: #334155;
-    --sidebar-text: #94a3b8;
-    --sidebar-text-active: #ffffff;
-    
     --navbar-height: 64px;
-    --navbar-bg: #ffffff;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --transition-speed: 0.25s;
     
-    --primary: #3b82f6;
-    --primary-hover: #2563eb;
-    --success: #10b981;
-    --danger: #ef4444;
-    --warning: #f59e0b;
-    --info: #06b6d4;
-    
+    /* Defaults: Light Mode & Blue Accent */
     --body-bg: #f1f5f9;
     --card-bg: #ffffff;
     --text-primary: #1e293b;
     --text-secondary: #64748b;
     --border-color: #e2e8f0;
+    --navbar-bg: #ffffff;
+    --table-header-bg: #f8fafc;
+    --table-row-hover: #f8fafc;
+    --input-bg: #ffffff;
     
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --transition-speed: 0.3s;
-    --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-    --box-shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --sidebar-bg: #1e293b;
+    --sidebar-active: #334155;
+    --sidebar-text: #94a3b8;
+    --sidebar-text-active: #ffffff;
+    
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --primary-subtle: rgba(59, 130, 246, 0.1);
+    
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --info: #06b6d4;
+    
+    --box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.08), 0 2px 8px -1px rgba(148, 163, 184, 0.06);
+    --box-shadow-hover: 0 12px 24px -4px rgba(148, 163, 184, 0.14), 0 4px 12px -2px rgba(148, 163, 184, 0.08);
+}
+
+/* Color Accent Themes */
+[data-theme-color="blue"] {
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --primary-subtle: rgba(59, 130, 246, 0.1);
+}
+[data-theme-color="green"] {
+    --primary: #10b981;
+    --primary-hover: #059669;
+    --primary-subtle: rgba(16, 185, 129, 0.1);
+}
+[data-theme-color="purple"] {
+    --primary: #8b5cf6;
+    --primary-hover: #7c3aed;
+    --primary-subtle: rgba(139, 92, 246, 0.1);
+}
+[data-theme-color="red"] {
+    --primary: #ef4444;
+    --primary-hover: #dc2626;
+    --primary-subtle: rgba(239, 68, 68, 0.1);
+}
+[data-theme-color="orange"] {
+    --primary: #f97316;
+    --primary-hover: #ea580c;
+    --primary-subtle: rgba(249, 115, 22, 0.1);
+}
+
+/* Dark Mode Theme overrides */
+[data-theme="dark"] {
+    --body-bg: #0f172a;
+    --card-bg: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border-color: #334155;
+    --navbar-bg: #1e293b;
+    --table-header-bg: #1e293b;
+    --table-row-hover: #334155;
+    --input-bg: #1e293b;
+    
+    --sidebar-bg: #0f172a;
+    --sidebar-active: #1e293b;
+    --sidebar-text: #64748b;
+    --sidebar-text-active: #f8fafc;
+    
+    --box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.25), 0 2px 8px -1px rgba(0, 0, 0, 0.15);
+    --box-shadow-hover: 0 12px 24px -4px rgba(0, 0, 0, 0.35), 0 4px 12px -2px rgba(0, 0, 0, 0.2);
 }
 
 * {
@@ -333,7 +387,7 @@ body {
 }
 
 .data-table th {
-    background-color: #f8fafc;
+    background-color: var(--table-header-bg);
     color: var(--text-secondary);
     font-weight: 600;
     font-size: 0.85rem;
@@ -354,7 +408,7 @@ body {
 }
 
 .data-table tbody tr:hover {
-    background-color: #f8fafc;
+    background-color: var(--table-row-hover);
 }
 
 /* Status Badges */
@@ -391,14 +445,42 @@ body {
     border-radius: 8px;
     font-size: 0.95rem;
     color: var(--text-primary);
-    background-color: #ffffff;
+    background-color: var(--input-bg);
     transition: all var(--transition-speed);
 }
 
 .form-control-custom:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 0 3px var(--primary-subtle);
+}
+
+/* Global Bootstrap overrides for dark/light themes */
+.form-control, .form-select {
+    background-color: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px var(--primary-subtle) !important;
+}
+
+.dropdown-menu {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+.dropdown-item {
+    color: var(--text-primary) !important;
+}
+
+.dropdown-item:hover {
+    background-color: var(--body-bg) !important;
+    color: var(--text-primary) !important;
 }
 
 /* Custom Buttons */

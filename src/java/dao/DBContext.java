@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DBContext {
+public class DBContext implements AutoCloseable {
     protected Connection connection;
 
     public DBContext() {
@@ -24,5 +24,18 @@ public class DBContext {
     
     public Connection getConnection() {
         return connection;
+    }
+
+    @Override
+    public void close() {
+        if (connection != null) {
+            try {
+                if (!connection.isClosed()) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }

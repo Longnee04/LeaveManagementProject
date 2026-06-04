@@ -1,11 +1,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
 <%@page import="models.LeaveRequest"%>
-<%@page import="models.EmployeeLeaveBalance"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%
     List<LeaveRequest> requests = (List<LeaveRequest>) request.getAttribute("requests");
-    List<EmployeeLeaveBalance> balances = (List<EmployeeLeaveBalance>) request.getAttribute("balances");
     SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 %>
 <!DOCTYPE html>
@@ -13,7 +11,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đơn nghỉ phép của tôi - HRM System</title>
+    <title>Tất cả đơn nghỉ phép - HRM System</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome 6 -->
@@ -33,57 +31,12 @@
             <!-- Page Header -->
             <div class="page-header">
                 <div>
-                    <h1 class="page-title">Đơn nghỉ phép của tôi</h1>
+                    <h1 class="page-title">Tất cả đơn nghỉ phép toàn công ty</h1>
                     <ul class="breadcrumb-custom m-0 p-0 mt-1">
                         <li class="breadcrumb-item-custom"><a href="${pageContext.request.contextPath}/dashboard">Dashboard</a></li>
-                        <li class="breadcrumb-item-custom" style="color: var(--text-secondary);"> / Đơn nghỉ phép</li>
+                        <li class="breadcrumb-item-custom" style="color: var(--text-secondary);"> / Tất cả đơn nghỉ</li>
                     </ul>
                 </div>
-                <a href="${pageContext.request.contextPath}/employee/leave-requests/create" class="btn-custom btn-primary-custom">
-                    <i class="fa-solid fa-file-circle-plus"></i> + Tạo đơn mới
-                </a>
-            </div>
-
-            <!-- Leave Balance Cards -->
-            <div class="row g-4 mb-4">
-                <% if (balances != null && !balances.isEmpty()) { %>
-                    <% for (EmployeeLeaveBalance b : balances) { 
-                        String cardColor = "info";
-                        String iconClass = "fa-calendar-day";
-                        String nameLower = b.getLeaveTypeName().toLowerCase();
-                        if (nameLower.contains("phép năm") || nameLower.contains("annual")) {
-                            cardColor = "primary";
-                            iconClass = "fa-umbrella-beach";
-                        } else if (nameLower.contains("bệnh") || nameLower.contains("sick")) {
-                            cardColor = "danger";
-                            iconClass = "fa-heart-pulse";
-                        } else if (nameLower.contains("thai sản") || nameLower.contains("maternity")) {
-                            cardColor = "success";
-                            iconClass = "fa-baby";
-                        } else if (nameLower.contains("không lương") || nameLower.contains("unpaid")) {
-                            cardColor = "warning";
-                            iconClass = "fa-money-bill-transfer";
-                        }
-                    %>
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                            <div class="stat-card <%= cardColor %> h-100">
-                                <div class="stat-card-info">
-                                    <h3><%= b.getLeaveTypeName() %></h3>
-                                    <div class="d-flex align-items-baseline gap-2 mt-2">
-                                        <span class="fs-3 fw-bold text-primary"><%= b.getRemainingDays() %></span>
-                                        <span class="text-muted" style="font-size: 0.85rem;">/ <%= b.getAnnualQuota() %> ngày</span>
-                                    </div>
-                                    <div class="mt-1" style="font-size: 0.8rem; color: var(--text-secondary);">
-                                        Đã dùng: <strong class="text-dark"><%= b.getUsedDays() %></strong> ngày
-                                    </div>
-                                </div>
-                                <div class="stat-card-icon">
-                                    <i class="fa-solid <%= iconClass %>"></i>
-                                </div>
-                            </div>
-                        </div>
-                    <% } %>
-                <% } %>
             </div>
 
             <!-- Alerts -->
@@ -105,18 +58,19 @@
                 <div class="table-responsive">
                     <% if (requests == null || requests.isEmpty()) { %>
                         <div class="empty-state-custom">
-                            <i class="fa-solid fa-file-signature"></i>
-                            <p>Bạn chưa gửi bất kỳ đơn xin nghỉ phép nào.</p>
+                            <i class="fa-solid fa-file-invoice"></i>
+                            <p>Không có đơn nghỉ phép nào trong hệ thống.</p>
                         </div>
                     <% } else { %>
                         <table class="data-table">
                             <thead>
                                 <tr>
                                     <th>Mã đơn</th>
-                                    <th>Loại nghỉ phép</th>
-                                    <th>Ngày bắt đầu</th>
-                                    <th>Ngày kết thúc</th>
-                                    <th>Số ngày nghỉ</th>
+                                    <th>Nhân viên</th>
+                                    <th>Phòng ban</th>
+                                    <th>Loại phép</th>
+                                    <th>Thời gian nghỉ</th>
+                                    <th>Số ngày</th>
                                     <th>Trạng thái</th>
                                     <th>Ngày gửi</th>
                                     <th class="text-end">Thao tác</th>
@@ -126,12 +80,16 @@
                                 <% for (LeaveRequest r : requests) { %>
                                     <tr>
                                         <td>#<%= r.getRequestID() %></td>
+                                        <td>
+                                            <div style="font-weight: 600;"><%= r.getEmployeeName() %></div>
+                                            <div style="font-size: 0.75rem; color: var(--text-secondary);"><%= r.getEmployeeEmail() %></div>
+                                        </td>
+                                        <td><%= r.getDepartmentName() != null ? r.getDepartmentName() : "<span class='text-muted'>Chưa phân bổ</span>" %></td>
                                         <td style="font-weight: 600;"><%= r.getLeaveTypeName() %></td>
-                                        <td><%= df.format(r.getStartDate()) %></td>
-                                        <td><%= df.format(r.getEndDate()) %></td>
+                                        <td><%= df.format(r.getStartDate()) %> - <%= df.format(r.getEndDate()) %></td>
                                         <td>
                                             <span class="badge bg-light text-dark border" style="font-size: 0.85rem; padding: 5px 12px; border-radius: 12px;">
-                                                <%= r.getTotalDays() %> ngày
+                                                <%= r.getDuration() %> ngày
                                             </span>
                                         </td>
                                         <td>
@@ -148,15 +106,9 @@
                                             <%= r.getCreatedAt() != null ? df.format(r.getCreatedAt()) : "-" %>
                                         </td>
                                         <td class="text-end">
-                                            <% if ("Draft".equals(r.getStatus())) { %>
-                                                <a class="btn-custom btn-outline-custom btn-sm-custom py-1 px-2" href="${pageContext.request.contextPath}/employee/leave-requests/edit?id=<%= r.getRequestID() %>">
-                                                    <i class="fa-solid fa-pen-to-square"></i> Sửa
-                                                </a>
-                                            <% } else { %>
-                                                <a class="btn-custom btn-secondary-custom btn-sm-custom py-1 px-2" href="${pageContext.request.contextPath}/employee/leave-requests/view?id=<%= r.getRequestID() %>">
-                                                    <i class="fa-solid fa-eye"></i> Xem
-                                                </a>
-                                            <% } %>
+                                            <a class="btn-custom btn-secondary-custom btn-sm-custom py-1 px-2" href="${pageContext.request.contextPath}/admin/leave-requests/view?id=<%= r.getRequestID() %>">
+                                                <i class="fa-solid fa-eye"></i> Chi tiết
+                                            </a>
                                         </td>
                                     </tr>
                                 <% } %>

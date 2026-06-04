@@ -1,5 +1,6 @@
 package controllers.employee;
 
+import dao.EmployeeLeaveBalanceDAO;
 import dao.LeaveRequestDAO;
 import dao.LeaveTypeDAO;
 import jakarta.servlet.ServletException;
@@ -8,6 +9,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import models.EmployeeLeaveBalance;
 import models.LeaveRequest;
 import models.LeaveType;
 import models.User;
@@ -28,8 +31,17 @@ public class EmployeeLeaveEditServlet extends HttpServlet {
             return;
         }
 
-        LeaveRequestDAO dao = new LeaveRequestDAO();
-        LeaveRequest leaveRequest = dao.findByIdAndUser(requestId, user.getUserID());
+        LeaveRequest leaveRequest;
+        List<LeaveType> leaveTypes;
+        List<EmployeeLeaveBalance> balances;
+        try (LeaveRequestDAO dao = new LeaveRequestDAO();
+             LeaveTypeDAO typeDAO = new LeaveTypeDAO();
+             EmployeeLeaveBalanceDAO balanceDAO = new EmployeeLeaveBalanceDAO()) {
+            leaveRequest = dao.findByIdAndUser(requestId, user.getUserID());
+            leaveTypes = typeDAO.findAll();
+            balances = balanceDAO.findByUserId(user.getUserID());
+        }
+
         if (leaveRequest == null) {
             response.sendRedirect(request.getContextPath() + "/employee/leave-requests?error="
                     + encode("Không tìm thấy đơn nghỉ phép."));
@@ -42,7 +54,8 @@ public class EmployeeLeaveEditServlet extends HttpServlet {
         }
 
         request.setAttribute("leaveRequest", leaveRequest);
-        request.setAttribute("leaveTypes", new LeaveTypeDAO().findAll());
+        request.setAttribute("leaveTypes", leaveTypes);
+        request.setAttribute("balances", balances);
         request.setAttribute("mode", "edit");
         request.getRequestDispatcher("/employee/leave/form.jsp").forward(request, response);
     }
@@ -59,63 +72,87 @@ public class EmployeeLeaveEditServlet extends HttpServlet {
             return;
         }
 
-        LeaveRequestDAO dao = new LeaveRequestDAO();
-        LeaveRequest existing = dao.findByIdAndUser(requestId, user.getUserID());
-        if (existing == null || !LeaveStatus.isEditable(existing.getStatus())) {
-            response.sendRedirect(request.getContextPath() + "/employee/leave-requests?error="
-                    + encode("Chỉ có thể chỉnh sửa đơn ở trạng thái Draft."));
-            return;
-        }
-
-        if ("delete".equalsIgnoreCase(action)) {
-            if (dao.deleteDraft(requestId, user.getUserID())) {
-                redirectSuccess(response, request, "Đã xóa bản nháp.");
-            } else {
-                redirectError(response, request, "Không thể xóa đơn này.");
+        try (LeaveRequestDAO dao = new LeaveRequestDAO()) {
+            LeaveRequest existing = dao.findByIdAndUser(requestId, user.getUserID());
+            if (existing == null || !LeaveStatus.isEditable(existing.getStatus())) {
+                response.sendRedirect(request.getContextPath() + "/employee/leave-requests?error="
+                        + encode("Chỉ có thể chỉnh sửa đơn ở trạng thái Draft."));
+                return;
             }
-            return;
+
+            if ("delete".equalsIgnoreCase(action)) {
+                if (dao.deleteDraft(requestId, user.getUserID())) {
+                    redirectSuccess(response, request, "Đã xóa bản nháp.");
+                } else {
+                    redirectError(response, request, "Không thể xóa đơn này.");
+                }
+                return;
+            }
+
+            String leaveTypeIdStr = request.getParameter("leaveTypeId");
+            String startDate = request.getParameter("startDate");
+            String endDate = request.getParameter("endDate");
+            String reason = trim(request.getParameter("reason"));
+            String minUnitChosen = request.getParameter("minUnitChosen");
+            if (minUnitChosen == null || minUnitChosen.isBlank()) {
+                minUnitChosen = "Full";
+            }
+
+            int leaveTypeId = parseInt(leaveTypeIdStr, 0);
+            
+            LeaveType leaveType;
+            try (LeaveTypeDAO typeDAO = new LeaveTypeDAO()) {
+                leaveType = typeDAO.findById(leaveTypeId);
+            }
+
+            String error = LeaveRequestValidator.validate(leaveTypeId, startDate, endDate, reason, leaveType, user, minUnitChosen);
+            if (error != null) {
+                List<LeaveType> leaveTypes;
+                List<EmployeeLeaveBalance> balances;
+                try (LeaveTypeDAO typeDAO = new LeaveTypeDAO();
+                     EmployeeLeaveBalanceDAO balanceDAO = new EmployeeLeaveBalanceDAO()) {
+                    leaveTypes = typeDAO.findAll();
+                    balances = balanceDAO.findByUserId(user.getUserID());
+                }
+                
+                request.setAttribute("error", error);
+                request.setAttribute("leaveRequest", existing);
+                request.setAttribute("leaveTypes", leaveTypes);
+                request.setAttribute("balances", balances);
+                request.setAttribute("mode", "edit");
+                request.setAttribute("leaveTypeId", leaveTypeIdStr);
+                request.setAttribute("startDate", startDate);
+                request.setAttribute("endDate", endDate);
+                request.setAttribute("reason", reason);
+                request.setAttribute("minUnitChosen", minUnitChosen);
+                request.getRequestDispatcher("/employee/leave/form.jsp").forward(request, response);
+                return;
+            }
+
+            double duration = LeaveRequestValidator.calculateDuration(startDate, endDate, leaveType, minUnitChosen);
+            String status = "submit".equalsIgnoreCase(action) ? LeaveStatus.PENDING : LeaveStatus.DRAFT;
+            
+            LeaveRequest updated = new LeaveRequest();
+            updated.setRequestID(requestId);
+            updated.setUserID(user.getUserID());
+            updated.setLeaveTypeID(leaveTypeId);
+            updated.setStartDate(LeaveRequestValidator.toSqlDate(startDate));
+            updated.setEndDate(LeaveRequestValidator.toSqlDate(endDate));
+            updated.setReason(reason);
+            updated.setStatus(status);
+            updated.setDuration(duration);
+            updated.setMinUnitChosen(minUnitChosen);
+
+            if (!dao.updateDraft(updated)) {
+                redirectError(response, request, "Không thể cập nhật đơn. Vui lòng thử lại.");
+                return;
+            }
+
+            String msg = LeaveStatus.PENDING.equals(status)
+                    ? "Đã gửi đơn nghỉ phép thành công."
+                    : "Đã cập nhật bản nháp.";
+            redirectSuccess(response, request, msg);
         }
-
-        String leaveTypeIdStr = request.getParameter("leaveTypeId");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
-        String reason = trim(request.getParameter("reason"));
-        int leaveTypeId = parseInt(leaveTypeIdStr, 0);
-        LeaveType leaveType = new LeaveTypeDAO().findById(leaveTypeId);
-
-        String error = LeaveRequestValidator.validate(leaveTypeId, startDate, endDate, reason, leaveType);
-        if (error != null) {
-            request.setAttribute("error", error);
-            request.setAttribute("leaveRequest", existing);
-            request.setAttribute("leaveTypes", new LeaveTypeDAO().findAll());
-            request.setAttribute("mode", "edit");
-            request.setAttribute("leaveTypeId", leaveTypeIdStr);
-            request.setAttribute("startDate", startDate);
-            request.setAttribute("endDate", endDate);
-            request.setAttribute("reason", reason);
-            request.getRequestDispatcher("/employee/leave/form.jsp").forward(request, response);
-            return;
-        }
-
-        String status = "submit".equalsIgnoreCase(action) ? LeaveStatus.PENDING : LeaveStatus.DRAFT;
-        LeaveRequest updated = new LeaveRequest();
-        updated.setRequestID(requestId);
-        updated.setUserID(user.getUserID());
-        updated.setLeaveTypeID(leaveTypeId);
-        updated.setStartDate(LeaveRequestValidator.toSqlDate(startDate));
-        updated.setEndDate(LeaveRequestValidator.toSqlDate(endDate));
-        updated.setReason(reason);
-        updated.setStatus(status);
-
-        if (!dao.updateDraft(updated)) {
-            redirectError(response, request, "Không thể cập nhật đơn. Vui lòng thử lại.");
-            return;
-        }
-
-        String msg = LeaveStatus.PENDING.equals(status)
-                ? "Đã gửi đơn nghỉ phép thành công."
-                : "Đã cập nhật bản nháp.";
-        redirectSuccess(response, request, msg);
     }
 
     private void redirectSuccess(HttpServletResponse response, HttpServletRequest request, String msg)

@@ -22,7 +22,7 @@ public class UserDAO extends DBContext {
             """;
         try (PreparedStatement st = connection.prepareStatement(sql)) {
             st.setString(1, email);
-            st.setString(2, password);
+            st.setString(2, utils.PasswordHash.sha256(password));
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     return mapRow(rs);
@@ -112,7 +112,7 @@ public class UserDAO extends DBContext {
             st.setString(1, user.getFullName());
             st.setString(2, user.getEmail());
             st.setString(3, user.getPhone());
-            st.setString(4, user.getPassword());
+            st.setString(4, utils.PasswordHash.sha256(user.getPassword()));
             st.setInt(5, user.getRoleID());
             if (user.getDepartmentID() > 0) {
                 st.setInt(6, user.getDepartmentID());
@@ -125,7 +125,12 @@ public class UserDAO extends DBContext {
             if (affectedRows > 0) {
                 try (ResultSet generatedKeys = st.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        return generatedKeys.getInt(1);
+                        int userId = generatedKeys.getInt(1);
+                        // Tự động khởi tạo số dư nghỉ phép của nhân viên mới
+                        try (EmployeeLeaveBalanceDAO balanceDAO = new EmployeeLeaveBalanceDAO()) {
+                            balanceDAO.initBalancesForUser(userId);
+                        }
+                        return userId;
                     }
                 }
             }
@@ -194,7 +199,7 @@ public class UserDAO extends DBContext {
         String checkSql = "SELECT UserID FROM Users WHERE UserID = ? AND Password = ?";
         try (PreparedStatement st = connection.prepareStatement(checkSql)) {
             st.setInt(1, userId);
-            st.setString(2, oldPassword);
+            st.setString(2, utils.PasswordHash.sha256(oldPassword));
             try (ResultSet rs = st.executeQuery()) {
                 if (!rs.next()) {
                     return false; // Mật khẩu cũ không khớp
@@ -208,7 +213,7 @@ public class UserDAO extends DBContext {
         // Cập nhật mật khẩu mới
         String updateSql = "UPDATE Users SET Password = ? WHERE UserID = ?";
         try (PreparedStatement st = connection.prepareStatement(updateSql)) {
-            st.setString(1, newPassword);
+            st.setString(1, utils.PasswordHash.sha256(newPassword));
             st.setInt(2, userId);
             return st.executeUpdate() > 0;
         } catch (SQLException e) {

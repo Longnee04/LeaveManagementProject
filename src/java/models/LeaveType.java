@@ -5,6 +5,9 @@ public class LeaveType {
     private String leaveTypeName;
     private String description;
     private int maxDays;
+    private boolean isWorkingDaysOnly;
+    private boolean newEmployeeRestricted;
+    private String minUnit;
 
     public int getLeaveTypeID() { return leaveTypeID; }
     public void setLeaveTypeID(int leaveTypeID) { this.leaveTypeID = leaveTypeID; }
@@ -17,4 +20,13 @@ public class LeaveType {
 
     public int getMaxDays() { return maxDays; }
     public void setMaxDays(int maxDays) { this.maxDays = maxDays; }
+
+    public boolean isIsWorkingDaysOnly() { return isWorkingDaysOnly; }
+    public void setIsWorkingDaysOnly(boolean isWorkingDaysOnly) { this.isWorkingDaysOnly = isWorkingDaysOnly; }
+
+    public boolean isNewEmployeeRestricted() { return newEmployeeRestricted; }
+    public void setNewEmployeeRestricted(boolean newEmployeeRestricted) { this.newEmployeeRestricted = newEmployeeRestricted; }
+
+    public String getMinUnit() { return minUnit; }
+    public void setMinUnit(String minUnit) { this.minUnit = minUnit; }
 }

@@ -24,7 +24,11 @@ public class EmployeeLeaveViewServlet extends HttpServlet {
             return;
         }
 
-        LeaveRequest leaveRequest = new LeaveRequestDAO().findByIdAndUser(requestId, user.getUserID());
+        LeaveRequest leaveRequest;
+        try (LeaveRequestDAO dao = new LeaveRequestDAO()) {
+            leaveRequest = dao.findByIdAndUser(requestId, user.getUserID());
+        }
+        
         if (leaveRequest == null) {
             response.sendRedirect(request.getContextPath() + "/employee/leave-requests");
             return;

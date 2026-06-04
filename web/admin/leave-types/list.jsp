@@ -69,7 +69,8 @@
                                     <th>ID</th>
                                     <th>Tên loại nghỉ phép</th>
                                     <th>Mô tả chi tiết</th>
-                                    <th>Số ngày tối đa / năm</th>
+                                    <th>Quy tắc & Giới hạn</th>
+                                    <th>Tối đa / năm</th>
                                     <th class="text-end">Thao tác</th>
                                 </tr>
                             </thead>
@@ -82,6 +83,29 @@
                                         </td>
                                         <td>
                                             <%= type.getDescription() != null && !type.getDescription().isEmpty() ? type.getDescription() : "<span class='text-muted'>Không có mô tả</span>" %>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                <% if (type.isIsWorkingDaysOnly()) { %>
+                                                    <span class="badge bg-light text-success border border-success px-2 py-1" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-briefcase me-1"></i> Ngày làm việc
+                                                    </span>
+                                                <% } else { %>
+                                                    <span class="badge bg-light text-secondary border border-secondary px-2 py-1" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-calendar-days me-1"></i> Ngày lịch
+                                                    </span>
+                                                <% } %>
+                                                
+                                                <% if (type.isNewEmployeeRestricted()) { %>
+                                                    <span class="badge bg-light text-danger border border-danger px-2 py-1" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-user-clock me-1"></i> Khóa thử việc
+                                                    </span>
+                                                <% } %>
+                                                
+                                                <span class="badge bg-light text-info border border-info px-2 py-1" style="font-size: 0.75rem;">
+                                                    Đơn vị: <%= "Half-Day".equalsIgnoreCase(type.getMinUnit()) ? "0.5 ngày" : "1 ngày" %>
+                                                </span>
+                                            </div>
                                         </td>
                                         <td>
                                             <span class="badge bg-primary" style="font-size: 0.85rem; padding: 6px 12px; border-radius: 12px;">
